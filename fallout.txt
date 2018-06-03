@@ -1,0 +1,6 @@
+"Gamemode"
+{
+	"base" 			"nutscript"
+	"title" 		"Fallout: New Vegas"
+	"author"		"Nutscript FalloutRP Team and Lazarus Team"
+}
