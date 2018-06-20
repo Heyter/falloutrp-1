@@ -34,7 +34,7 @@ local function DrawBlur(x,y,text,align,blur,color,font,blurfont,alpha)
 	if color and color != 0 then
 		color = color
 	else
-		color = SCHEMA:GetFalloutColor()
+		color = SCHEMA:GetColor()
 	end
 
 	local normfo, blurfo = "FOFont_normal", "FOFont_normal_blur"
@@ -82,7 +82,7 @@ local intHooks = {
 		end
 	end,
 	corpse = function(ent)
-		if (ent:GetCorpseID()) then
+		if (ent:IsCorpse()) then
 			return "Fouiller"
 		end
 	end
@@ -158,13 +158,13 @@ hook.Add("HUDPaint","DrawHUDFO",function()
 			if !nut.config.get("hCrossWhenWep") or !(LocalPlayer():GetAmmoCount(LocalPlayer():GetActiveWeapon():GetPrimaryAmmoType()) > 0 or LocalPlayer():GetActiveWeapon():Clip1() > -1) then
 				if (text != nil) then
 					surface.SetMaterial(cross_highlight)
-					surface.SetDrawColor(SCHEMA:GetFalloutColor())
+					surface.SetDrawColor(SCHEMA:GetColor())
 					surface.DrawTexturedRectRotated(ScrW()/2, ScrH() /2, 64,64,0)
 
 					DrawBlur(ScrW()/2, ScrH() - 130, text, 1, false)
 				else
 					surface.SetMaterial(cross_normal)
-					surface.SetDrawColor(SCHEMA:GetFalloutColor())
+					surface.SetDrawColor(SCHEMA:GetColor())
 					surface.DrawTexturedRectRotated(ScrW()/2, ScrH() /2, 64,64,0)
 				end
 			end
@@ -172,14 +172,14 @@ hook.Add("HUDPaint","DrawHUDFO",function()
 		end
 
 	surface.SetTexture(hammo)
-	surface.SetDrawColor(SCHEMA.falloutColor.r,SCHEMA.falloutColor.g,SCHEMA.falloutColor.b,255)   
+	surface.SetDrawColor(SCHEMA:GetColor())   
 	surface.DrawTexturedRectRotated( ScrW() - 170, ScrH() - 40, 390,200,0 )
 
 	if LocalPlayer():getLocalVar("stm") && LocalPlayer():getLocalVar("stm") <= 100 && LocalPlayer():getLocalVar("stm") then
 		hl = LocalPlayer():getLocalVar("stm")
 		for i=0,hl/2.75 do
 			surface.SetTexture(htock)
-			surface.SetDrawColor(SCHEMA.falloutColor.r,SCHEMA.falloutColor.g,SCHEMA.falloutColor.b,255)
+			surface.SetDrawColor(SCHEMA:GetColor())
 			surface.DrawTexturedRectRotated( ScrW()  - 90 - i * 6, ScrH() - 100, 20,24,0 )
 		end
 
@@ -187,7 +187,7 @@ hook.Add("HUDPaint","DrawHUDFO",function()
 
 		for i=0,36.3636 do
 			surface.SetTexture(htock)
-			surface.SetDrawColor(SCHEMA.falloutColor.r,SCHEMA.falloutColor.g,SCHEMA.falloutColor.b,255)
+			surface.SetDrawColor(SCHEMA:GetColor())
 			surface.DrawTexturedRectRotated( ScrW() - 100 - i * 7, ScrH() - 116, 24,30,0 )
 		end
 	end
@@ -227,13 +227,13 @@ hook.Add("HUDPaint","DRAWFOTEXT",function()
 				if(b:GetNWBool("Enemy") == true) then
 					surface.SetDrawColor(255,75,75,255)
 				else
-					surface.SetDrawColor(SCHEMA.falloutColor.r, SCHEMA.falloutColor.g, SCHEMA.falloutColor.b, 255)
+					surface.SetDrawColor(SCHEMA:GetColor())
 				end
 			surface.DrawTexturedRectRotated(ang + 202, ScrH() - 48 , 48,48,0 )
 		end
 	end
 	surface.SetTexture(compass)
-	surface.SetDrawColor(SCHEMA.falloutColor.r, SCHEMA.falloutColor.g, SCHEMA.falloutColor.b, 255)
+	surface.SetDrawColor(SCHEMA:GetColor())
 	SCHEMA.DrawPartialTexturedRect( 82, ScrH() - 97, 256, 64, (-LocalPlayer():GetAngles().y/360) * 1024, 0, 256, 64,1024,64 );
 end)
 
@@ -245,27 +245,27 @@ local armor = surface.GetTextureID("hud/fo/armor")
 hook.Add("HUDPaint","FOHL",function()
 	
 	surface.SetTexture(hbar)
-	surface.SetDrawColor(SCHEMA.falloutColor.r, SCHEMA.falloutColor.g, SCHEMA.falloutColor.b, 255)
+	surface.SetDrawColor(SCHEMA:GetColor())
 	surface.DrawTexturedRectRotated( 264, ScrH() - 40, 390,200,0 )
 
 	if(LocalPlayer():Health() <= 100 && LocalPlayer():Health() > 0) then
 		hl = LocalPlayer():Health()
 		for i=0,hl/2.75 do
 			surface.SetTexture(htick)
-			surface.SetDrawColor(SCHEMA.falloutColor.r, SCHEMA.falloutColor.g, SCHEMA.falloutColor.b, 255)
+			surface.SetDrawColor(SCHEMA:GetColor())
 			surface.DrawTexturedRectRotated( 92.5 + i * 6, ScrH() - 100, 20,24,0 )
 		end
 	elseif(LocalPlayer():Health() > 0) then
 		for i=0,36.3636 do
 			surface.SetTexture(htick)
-			surface.SetDrawColor(SCHEMA.falloutColor.r, SCHEMA.falloutColor.g, SCHEMA.falloutColor.b, 255)
+			surface.SetDrawColor(SCHEMA:GetColor())
 			surface.DrawTexturedRectRotated( 92.5 + i * 6, ScrH() - 100, 20,24,0 )
 		end
 	end
 
 	if (LocalPlayer():Armor() > 0) then
 			surface.SetTexture(armor)
-			surface.SetDrawColor(SCHEMA.falloutColor.r, SCHEMA.falloutColor.g, SCHEMA.falloutColor.b, 255)
+			surface.SetDrawColor(SCHEMA:GetColor())
 			surface.DrawTexturedRectRotated( 327, ScrH() - 102, 20,20,0 )
 	end
 
