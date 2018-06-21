@@ -1,21 +1,21 @@
 local Entity = FindMetaTable( "Entity" )
 
 local VARS_TO_CLONE = {
-		"Model",
-		"Pos",
-		"Angles",
-		"Color",
-		"Skin",
+	"Model",
+	"Pos",
+	"Angles",
+	"Color",
+	"Skin",
 }
 	
 function Entity:CloneVarsOn( ent )
-		-- Vars
-		for _, v in pairs( VARS_TO_CLONE ) do
-		local get = Entity["Get"..v]
-		local set = Entity["Set"..v]
-		
-		set(ent, get(self))
-	end
+	-- Vars
+	for _, v in pairs( VARS_TO_CLONE ) do
+        local get = Entity["Get"..v]
+        local set = Entity["Set"..v]
+            
+        set(ent, get(self))
+    end
 
 	-- Tables
 	local bgs = self:GetBodyGroups()
