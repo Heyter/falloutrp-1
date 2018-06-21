@@ -2,5 +2,5 @@
 {
 	"base" 			"nutscript"
 	"title" 		"Fallout: New Vegas"
-	"author"		"Nutscript FalloutRP Team"
+	"author"		"SuperMicronde, vin, Trip, Otunga"
 }
