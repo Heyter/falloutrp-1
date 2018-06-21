@@ -22,7 +22,6 @@ clothes = clothes or {} -- Clothing
 local Include = nut.util.include
 local IncludeDir = nut.util.includeDir
 
--- Main
 IncludeDir("libs", nil, true)
 IncludeDir("meta", nil, true)
 IncludeDir("modules", nil, true)
@@ -33,17 +32,13 @@ Include("fonts.lua", "client")
 
 --[[ SCHEMA CONFIGURATION ]]--
 
---Theme Color
 SCHEMA.ThemeColor = Color(255, 185, 100, 255)
 
--- Money
 nut.currency.set("","Cap", "Caps")
 
--- Disabled plugins
 SCHEMA:DisablePlugin("doors")
 SCHEMA:DisablePlugin("crosshair")
 SCHEMA:DisablePlugin("storage")
 
--- Default config override
 SCHEMA:OverrideConfig("color", SCHEMA.ThemeColor)
 SCHEMA:OverrideConfig("font", "Monofonto")
