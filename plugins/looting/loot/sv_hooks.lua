@@ -124,13 +124,11 @@ function PLUGIN:CloseLoot(client, share)
 	local corpse = client:GetVar("LootCorpse")
 
 	if ( IsValid(corpse) ) then
-
 		PLUGIN:UnregSearcher(corpse, client)
 
 		if ( share ) then
 			netstream.Start(client, "lootExit")
 		end
-
 	end
 end
 
@@ -144,7 +142,6 @@ function PLUGIN:OpenLoot(corpse, client)
 		local inv = corpse:GetVar("LootInv")
 
 		if ( inv ) then
-
 			PLUGIN:RegSearcher(corpse, client)
 
 			inv:sync(client)
