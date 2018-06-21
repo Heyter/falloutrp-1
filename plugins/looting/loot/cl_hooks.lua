@@ -1,7 +1,5 @@
 local PLUGIN = PLUGIN
 
---[[ Vars management ]]--
-
 local corpses_vars = {
 	"Entity",
 	"Inventory",
@@ -58,21 +56,15 @@ local function widthdrawMoney(panel)
 	local value = tonumber(entry:GetValue()) or 0
 
 	if ( PLUGIN:GetCurMoney() >= value and value > 0 ) then
-		
 		surface.PlaySound("hgn/crussaria/items/itm_gold_up.wav")
 		netstream.Start("lootWdMny", value)
 		entry:SetValue(0)
-		
 	elseif ( value < 1  ) then
-		
 		nut.util.notify(L("provideValidNumber"))
 		entry:SetValue(0)
-		
 	else
-		
 		nut.util.notify(L("cantAfford"))
 		entry:SetValue(0)
-		
 	end
 
 end
@@ -85,23 +77,17 @@ local function depositMoney(panel)
 	if ( value and value > 0 ) then
 
 		if ( LocalPlayer():getChar():hasMoney(value) ) then
-
 			surface.PlaySound("hgn/crussaria/items/itm_gold_down.wav")
 			netstream.Start("lootDpMny", value)
 			entry:SetValue(0)
-
 		else
-
 			nut.util.notify(L("provideValidNumber"))
 			entry:SetValue(0)
-
 		end
 
 	else
-
 		nut.util.notify(L("cantAfford"))
 		entry:SetValue(0)
-
 	end
 
 end
@@ -211,17 +197,13 @@ end
 
 -- Stared action to open the inventory of a corpse
 netstream.Hook("lootOpen", function(invId, money)
-
 	local corpse = PLUGIN:GetCurEntity()
 	local inventory = nut.item.inventories[invId]
 
 	if ( IsValid(corpse) and inventory and isnumber(money) ) then
-
 		PLUGIN:SetCurInventory(inventory)
 		PLUGIN:DisplayInventory()
-		
+
 		PLUGIN:SetCorpseMoney(money)
-
 	end
-
 end)
