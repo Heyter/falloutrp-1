@@ -102,8 +102,6 @@ function PLUGIN:TransferMoney(victim, corpse)
 	char:setMoney(0)
 end
 
---[[ Corpse opening ]]--
-
 -- Make know that a player is currently seaching the corpse
 function PLUGIN:RegSearcher(corpse, client)
 	if ( not corpse.Searchers ) then
@@ -181,9 +179,6 @@ netstream.Hook("lootOpen", function(client)
 
 	end
 end)
-
-
---[[ Money management ]]--
 
 -- Send corpse money to all corpse searchers
 function PLUGIN:ShareCorpseMoney(corpse)
