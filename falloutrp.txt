@@ -1,4 +1,4 @@
-"Gamemode"
+"falloutrp"
 {
 	"base" 			"nutscript"
 	"title" 		"Fallout: New Vegas"
