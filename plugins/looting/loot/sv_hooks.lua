@@ -68,7 +68,6 @@ function PLUGIN:TransferInventory(from, to)
 	if ( fromSlots ) then
 		for x, items in pairs(fromSlots) do
 			for y, item in pairs(items) do
-
 				if ( fromPlayer and item:getData("equip") ) then
 					item:call("EquipUn", fromPlayer)
 				end
@@ -79,7 +78,6 @@ function PLUGIN:TransferInventory(from, to)
 						
 				toSlots[x][y] = item
 				fromSlots[x][y] = nil
-					
 			end
 		end
 
