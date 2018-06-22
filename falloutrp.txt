@@ -1,6 +1,6 @@
 "falloutrp"
 {
-	"base" 			"nutscript"
+	"base" 		"nutscript"
 	"title" 		"Fallout: New Vegas"
 	"author"		"SuperMicronde, vin, Trip, Otunga"
 }
