@@ -83,7 +83,14 @@ local intHooks = {
 	end,
 	corpse = function(ent)
 		if (ent:IsCorpse()) then
-			return "Fouiller"
+			local corpseName
+
+			if ( LocalPlayer():getChar():doesRecognize(ent:GetNW2Int("corpseChrId")) ) then
+				corpseName = ent:GetNW2String("corpseChrName")
+			end
+			corpseName = corpseName or "Corpse"
+
+			return string.upper(input.LookupBinding( "+use" ))..") ".."Search\n"..corpseName
 		end
 	end
 }

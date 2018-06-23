@@ -16,18 +16,38 @@ function PLUGIN:OnCorpseCreated(corpse, victim, char)
 	-- Check that players are near and looking the corpses
 	function corpse:EyeTraceCheck()
 		if ( CurTime() < (self.NextTraceCheck or 0) ) then return end
-
-		if ( self.Searchers ) then
-			for k, _ in pairs(self.Searchers) do
-				if ( PLUGIN:EyeTrace(k) ~= self ) then
-					PLUGIN:CloseLoot(k, false)
-				end
-			end
-		end
-		
 		self.NextTraceCheck = CurTime() + 0.1
+
+		PLUGIN:SearchersFunction(self.Searchers, function(searcher)
+			if ( PLUGIN:EyeTrace(searcher) ~= self ) then
+				PLUGIN:CloseLoot(searcher, false)
+			end
+		end)
 	end
 	hook.Add("Think", corpse, corpse.EyeTraceCheck)
+end
+
+local function findInventoryPlayer(inv)
+	local char = inv.owner
+	char = nut.char.loaded[char]
+
+	if ( char ) then
+		return char:getPlayer()
+	end
+end
+
+function PLUGIN:CanItemBeTransfered(item, curInv, newInv)
+	if ( curInv.corpse ) then
+		local client = findInventoryPlayer(newInv)
+		if ( not IsValid(client) ) then return end
+
+		return ( client:GetVar("LootCorpse") == curInv.corpse )
+	elseif ( newInv.corpse ) then
+		local client = findInventoryPlayer(curInv)
+		if ( not IsValid(client) ) then return end
+
+		return ( client:GetVar("LootCorpse") == newInv.corpse )
+	end
 end
 
 -- Attach a new inventory to a corpse
@@ -36,16 +56,18 @@ function PLUGIN:CreateInventory(corpse, width, height)
 	nut.item.newInv(0, "corpse", function(instance)
 		instance.w = width
 		instance.h = height
+		instance.corpse = corpse
+
 		inv = instance
 	end)
 
 	corpse:SetVar("LootInv", inv)
 	-- Remove inventory from db when the corpse is removed
-	corpse:CallOnRemove("RemoveLootInv", function(ent)
+	corpse:CallOnRemove("RemoveCorpseInv", function(ent)
 		local inv = ent:GetVar("LootInv")
 		local invId = inv:getID()
 
-		if ( ( not nut.shuttingDown ) and ( not ent.nutIsSafe and inv ) ) then
+		if ( inv ) then
 			nut.item.inventories[invId] = nil
 			nut.db.query("DELETE FROM nut_items WHERE _invID = " .. invId)
 			nut.db.query("DELETE FROM nut_inventories WHERE _invID = " .. invId)
@@ -68,16 +90,20 @@ function PLUGIN:TransferInventory(from, to)
 	if ( fromSlots ) then
 		for x, items in pairs(fromSlots) do
 			for y, item in pairs(items) do
-				if ( fromPlayer and item:getData("equip") ) then
-					item:call("EquipUn", fromPlayer)
+
+				if ( not PLUGIN.IgnoredItem[item.uniqueID] ) then
+					if ( fromPlayer and item:getData("equip") ) then
+						item:call("EquipUn", fromPlayer)
+					end
+
+					if ( not toSlots[x] ) then
+						toSlots[x] = {}
+					end
+							
+					toSlots[x][y] = item
+					fromSlots[x][y] = nil
 				end
 
-				if ( not toSlots[x] ) then
-					toSlots[x] = {}
-				end
-						
-				toSlots[x][y] = item
-				fromSlots[x][y] = nil
 			end
 		end
 
@@ -87,7 +113,7 @@ function PLUGIN:TransferInventory(from, to)
 				v:sync(fromPlayer)	
 			end
 		end
-				
+
 	end
 end
 
@@ -127,12 +153,12 @@ function PLUGIN:CloseLoot(client, share)
 		PLUGIN:UnregSearcher(corpse, client)
 
 		if ( share ) then
-			netstream.Start(client, "lootExit")
+			netstream.Start(client, "corpses_ext")
 		end
 	end
 end
 
-netstream.Hook("lootExit", function(client)
+netstream.Hook("corpses_ext", function(client)
 	PLUGIN:CloseLoot(client)
 end)
 
@@ -145,13 +171,13 @@ function PLUGIN:OpenLoot(corpse, client)
 			PLUGIN:RegSearcher(corpse, client)
 
 			inv:sync(client)
-			netstream.Start(client, "lootOpen", inv:getID(), corpse:GetVar("LootMoney"))
+			netstream.Start(client, "corpses_opn", inv:getID(), corpse:GetVar("LootMoney"))
 		end
 	end
 end
 
 -- Stared action to open the inventory of a corpse
-netstream.Hook("lootOpen", function(client)
+netstream.Hook("corpses_opn", function(client)
 	if ( not IsValid(client) ) then return end
 
 	local corpse = PLUGIN:EyeTrace(client)
@@ -175,13 +201,23 @@ netstream.Hook("lootOpen", function(client)
 	end
 end)
 
+function PLUGIN:SearchersFunction(searchers, func)
+	if ( searchers ) then
+		for k, _ in pairs(searchers) do
+			if ( IsValid(k) ) then
+				func(k)
+			end
+		end
+	end
+end
+
 -- Send corpse money to all corpse searchers
 function PLUGIN:ShareCorpseMoney(corpse)
 	local searchers = corpse.Searchers
 	
-	if ( searchers ) then
-		netstream.Start(searchers, "lootMoney", corpse:GetVar("LootMoney"))
-	end
+	PLUGIN:SearchersFunction(searchers, function(searcher)
+		netstream.Start(searcher, "corpses_mny", corpse:GetVar("LootMoney"))
+	end)
 end
 
 -- Widthdraw money from loot reserve
@@ -197,14 +233,14 @@ function PLUGIN:WidthdrawMoney(client, corpse, amount)
 	end
 end
 
-netstream.Hook("lootWdMny", function(client, amount)
+netstream.Hook("corpses_WdMny", function(client, amount)
 	if ( not isnumber(amount) ) then return end
 	if ( not IsValid(client) ) then return end
 
 	local corpse = client:GetVar("LootCorpse")
-	if ( not IsValid(corpse) ) then return end
-
-	PLUGIN:WidthdrawMoney(client, corpse, amount)
+	if ( IsValid(corpse) ) then
+		PLUGIN:WidthdrawMoney(client, corpse, amount)
+	end
 end)
 
 -- Deposit money to corpse reserve
@@ -221,12 +257,12 @@ function PLUGIN:DepositMoney(client, corpse, amount)
 	end
 end
 
-netstream.Hook("lootDpMny", function(client, amount)
+netstream.Hook("corpses_DpMny", function(client, amount)
 	if ( not isnumber(amount) ) then return end
 	if ( not IsValid(client) ) then return end
 
 	local corpse = client:GetVar("LootCorpse")
-	if ( not IsValid(corpse) ) then return end
-
-	PLUGIN:DepositMoney(client, corpse, amount)
+	if ( IsValid(corpse) ) then
+		PLUGIN:DepositMoney(client, corpse, amount)
+	end
 end)
