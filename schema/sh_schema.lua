@@ -1,7 +1,7 @@
 --[[ SCHEMA INFO ]]--
 
 SCHEMA.name = "Fallout: New Vegas"
-SCHEMA.author = "Nutscript FalloutRP Team"
+SCHEMA.author = "SuperMicronde, vin, Trip, Otunga"
 SCHEMA.desc = "An official NutScript schema"
 
 --[[ SCHEMA GLOBAL TABLES ]]--
@@ -32,7 +32,7 @@ Include("fonts.lua", "client")
 
 --[[ SCHEMA CONFIGURATION ]]--
 
-SCHEMA.ThemeColor = Color(255, 185, 100, 255)
+SCHEMA.ThemeColor = Color(255, 182, 66, 255) -- Fallout NV orange
 
 nut.currency.set("","Cap", "Caps")
 
