@@ -16,8 +16,8 @@ LANGUAGE = {
 	introSub11 = "Four years have passed since the Republic held the Dam - just barely - against the Legion's onslaught. The Legion did not retreat",
 	introSub12 = "Across the river, it gathers strength. Campfires burned, training drums beat",
 	introSub13 = "Through it all, the New Vegas Strip has stayed open for business under the control of its mysterious overseer, Mr. House,",
-	introSub14 = "and his army of rehabilitated Tribals and police robots",
-	introSub15 = "and his army of rehabilitated Tribals and police robots",
+	introSub14 = "and his army of rehabilitated Tribals and police robots.",
+	introSub15 = "and his army of rehabilitated Tribals and police robots.",
 	-- "Interactions with ents" displayer
 	intUse = "Use",
 	intDoor = "Door",
