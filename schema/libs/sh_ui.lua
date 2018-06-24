@@ -10,8 +10,6 @@ function SCHEMA:GetColor(alpha)
     return color
 end
 
---[[ Globals ]]--
-
 -- Fallout colours
 FALLOUT_AMBER = Color(255, 182, 66, 255)
 FALLOUT_BLUE = Color(46, 207, 255, 255)
