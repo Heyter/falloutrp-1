@@ -1,8 +1,5 @@
 fo.string = fo.string or {}
 
--- surface
-local setFont = surface.SetFont
-local getTextSize = surface.GetTextSize
 -- string
 local strSub = string.sub
 local strLen = string.len
