@@ -8,3 +8,4 @@ local dir = PLUGIN.folder.."/"
 
 nut.util.includeDir(dir.."ragdolling", true, true)
 nut.util.includeDir(dir.."looting", true, true)
+nut.util.include("sv_ignored.lua")

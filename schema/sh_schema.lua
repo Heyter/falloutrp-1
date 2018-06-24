@@ -22,6 +22,7 @@ clothes = clothes or {} -- Clothing
 local Include = nut.util.include
 local IncludeDir = nut.util.includeDir
 
+fo = fo or {}
 IncludeDir("libs", nil, true)
 IncludeDir("meta", nil, true)
 IncludeDir("modules", nil, true)

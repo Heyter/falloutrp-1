@@ -91,7 +91,7 @@ function PLUGIN:TransferInventory(from, to)
 		for x, items in pairs(fromSlots) do
 			for y, item in pairs(items) do
 
-				if ( not PLUGIN.IgnoredItem[item.uniqueID] ) then
+				if ( not PLUGIN.IgnoredItems[item.uniqueID] ) then
 					if ( fromPlayer and item:getData("equip") ) then
 						item:call("EquipUn", fromPlayer)
 					end
