@@ -21,10 +21,6 @@ end
 --Helper UI functions
 
 function fo.ui.DrawWrappedText(lines, font, color, x, y, gap)
-	if ( not gap ) then 
-		local gap = 0
-	end
-
 	local fontHeight = draw.GetFontHeight( font )
 	surface.SetFont(font)
 	surface.SetTextColor(color)
@@ -32,6 +28,6 @@ function fo.ui.DrawWrappedText(lines, font, color, x, y, gap)
 	for _, line in pairs(lines) do
 		surface.SetTextPos(x, y)
 		surface.DrawText(line)
-		y = y + fontHeight + gap
+		y = y + fontHeight + (gap or 0)
 	end
 end
