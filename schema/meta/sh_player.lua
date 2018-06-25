@@ -21,6 +21,7 @@ if CLIENT then
 				local nextNotify = forpNotifyQueue[1] -- Get what notification is next in line
 				displayNotify(nextNotify[1], (nextNotify[2] or nil), (nextNotify[3] or nil)) -- Display it
 			else
+				notify:AlphaTo(0, 1, 0, function() notify:Remove() end) -- Fade out if it's the last notification
 			end
 		end)
 	end
