@@ -84,7 +84,6 @@ function fo.string.WrapText( text, font, wLimit, dotLimit )
 
 	for k, w in pairs( words ) do
 		local s = SysTime()
-		wLimit = wLimit - getTextSize(DOTS) -- Account for dot size in width calculations
 		processWord(w)
 	end
 
