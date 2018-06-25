@@ -14,12 +14,13 @@ if CLIENT then
 		end
 		surface.PlaySound("forp/notify.mp3") -- Play dat bing
 		timer.Simple(7, function() 
-			notify:Remove()
 			table.remove(forpNotifyQueue, 1) -- Remove from table
 
 			if forpNotifyQueue[1] then
+				notify:Remove()
 				local nextNotify = forpNotifyQueue[1] -- Get what notification is next in line
 				displayNotify(nextNotify[1], (nextNotify[2] or nil), (nextNotify[3] or nil)) -- Display it
+			else
 			end
 		end)
 	end
