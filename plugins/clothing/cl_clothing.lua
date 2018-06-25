@@ -281,7 +281,7 @@ function clothes.Clone(from, to)
     end
 end
 
-hook.Add("DrawNutModelView", "ShowClothingInF1", function(panel, ent)
+function PLUGIN:DrawNutModelView(panel, ent)
 
     // Check that the ModelPanel drawn is in the F1 menu
     if ( IsValid(nut.gui.info) && nut.gui.info.model == panel ) then
@@ -305,9 +305,9 @@ hook.Add("DrawNutModelView", "ShowClothingInF1", function(panel, ent)
 
     end
 
-end)
+end
 
-hook.Add("ShouldAllowScoreboardOverride", "ShowClothingInScoreboard", function(client, var)
+function PLUGIN:ShouldAllowScoreboardOverride(client, var)
 
     local slot = client.nutScoreSlot
 
@@ -341,4 +341,4 @@ hook.Add("ShouldAllowScoreboardOverride", "ShowClothingInScoreboard", function(c
 
     end
 
-end)
+end

@@ -7,9 +7,9 @@ FO_MRGNG.dataVars = {
 	"facialhair"
 }
 
-hook.Add("OnCharCreated", "sendHookToClient", function(client, char)
+function PLUGIN:OnCharCreated(client, char)
 	netstream.Start(client, "charCreated", char:getID())
-end)
+end
 
 netstream.Hook("applyBodyParts", function(client, charId, bodyData)
 
@@ -23,7 +23,7 @@ netstream.Hook("applyBodyParts", function(client, charId, bodyData)
 		
 end)
 
-hook.Add("PlayerLoadout", "ApplyFalloutBody", function(client)
+function PLUGIN:PlayerLoadout(client)
 	if (client:getChar()) then
 		if (client:IsFalloutHuman()) then
 
@@ -94,4 +94,4 @@ hook.Add("PlayerLoadout", "ApplyFalloutBody", function(client)
 			client:SetSkin(0)
 		end
 	end
-end)
+end

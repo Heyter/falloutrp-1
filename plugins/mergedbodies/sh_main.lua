@@ -156,11 +156,11 @@ function FO_MRGNG:GrabEarAnimation(client)
 	end
 end
 
-hook.Add("IsFalloutModel", "blacktea_is_a_tea", function(ply)
+function PLUGIN:IsFalloutModel(ply)
 	if ply:IsFalloutHuman() then
 		return true
 	end
-end)
+end
 
 local animClasses = {
 	["models/lazarusroleplay/heads/female_african.mdl"] = "fallout_female",
@@ -173,7 +173,7 @@ local animClasses = {
 	["models/lazarusroleplay/heads/male_hispanic.mdl"] = "fallout_male"
 }
 
-hook.Add("CalcMainActivity", "useFalloutModelsAnimations", function(client, velocity)
+function PLUGIN:CalcMainActivity(client, velocity)
 	local model = client:GetModel()
 	local weapon = client:GetActiveWeapon()
 	local holdType = "normal"
@@ -270,4 +270,4 @@ hook.Add("CalcMainActivity", "useFalloutModelsAnimations", function(client, velo
 
 		return client.CalcIdeal or ACT_IDLE, client.CalcSeqOverride or -1
 	end
-end)
+end

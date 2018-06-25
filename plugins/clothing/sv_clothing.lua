@@ -19,18 +19,14 @@ end
 
 --[[ Load all equipped clothes when a player load a character ]]--
 
-hook.Add("PlayerSpawn", "LoadEquippedClothes", function(ply)
-
+function PLUGIN:PlayerSpawn(ply)
     clothes.ItemLoadout(ply)
-
-end)
+end
 
 
 
 --[[ Send all the clothes when a player spawn on the server ]]--
 
-hook.Add("PlayerInitialSpawn", "LoadClothing", function(ply)
-
+function PLUGIN:PlayerInitialSpawn(ply)
 	netstream.Hook(ply, "aClt", clothes.Items)
-
-end)
+end
