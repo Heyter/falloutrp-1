@@ -1,20 +1,22 @@
 fo.ui = fo.ui or {}
 
-function SCHEMA:GetColor(alpha)
-    local color = self.ThemeColor
-
-    if ( alpha ) then
-        color.a = alpha
-    end
-
-    return color
-end
-
 -- Fallout colours
-FALLOUT_AMBER = Color(255, 182, 66, 255)
-FALLOUT_BLUE = Color(46, 207, 255, 255)
-FALLOUT_GREEN = Color(26, 255, 128, 255)
-FALLOUT_WHITE = Color(192, 255, 255 ,255)
+local falloutColours = {
+	amber = Color(255, 182, 66, 255),
+	blue = Color(46, 207, 255, 255),
+	green = Color(26, 255, 128, 255),
+	white = Color(192, 255, 255 ,255)
+}
+
+--Helper UI functions
+
+if CLIENT then
+	FORP_CVAR_COLOUR = CreateClientConVar("forp_colour", "amber", true, false, "Changes the UI colour, can be amber, blue, green or white.")
+
+	function SCHEMA:GetColor()
+		return falloutColours[FORP_CVAR_COLOUR:GetString()] or falloutColours.amber
+	end
+end
 
 --Helper UI functions
 

@@ -1,1 +1,0 @@
-nut.config.add("hCrossWhenWep", false, "hCrossWhenWepDesc", nil, {category = "visual"})

@@ -1,4 +1,6 @@
-hook.Add("CanDrawAmmoHUD", "removeNutAmmoHud", function() return false end) -- Remove NutScript ammo hud
+function PLUGIN:CanDrawAmmoHUD()
+	return false
+end
 
 -- Remove certain bars 
 local barsToRemove = {
@@ -98,7 +100,7 @@ local intHooks = {
 local nextRefresh = 0
 local text
 
-hook.Add("Tick", "getEntityInteractionText", function()
+function PLUGIN:Tick()
 	if CurTime() > nextRefresh && LocalPlayer().GetEyeTraceNoCursor then
 		text = nil
 		local trace = LocalPlayer():GetEyeTraceNoCursor()
@@ -139,7 +141,7 @@ hook.Add("Tick", "getEntityInteractionText", function()
 		end
 		nextRefresh = CurTime() + 0.1
 	end
-end)
+end
 
 local hammo = surface.GetTextureID("hud/fo/ammo")
 local htock = surface.GetTextureID("hud/fo/tick") 
@@ -149,8 +151,20 @@ local bottom_infobars = Material("forp/glow_hud_bottom_info_seperator_divider.pn
 
 local validclasses = {"nut_keys", "nut_hands", "weapon_physgun", "gmod_tool"}
 
-hook.Add("HUDPaint","DrawHUDFO",function()
+local compass = surface.GetTextureID("hud/fo/compass") 
+local npc = surface.GetTextureID("hud/fo/pointer2") 
+local player = surface.GetTextureID("hud/fo/player_found") 
+local objetive = surface.GetTextureID("hud/fo/objetive")
 
+local htick = surface.GetTextureID("hud/fo/tick") 
+local hbar = surface.GetTextureID("hud/fo/life_hud") 
+local henemy = surface.GetTextureID("hud/fo/enemy_health") 
+local armor = surface.GetTextureID("hud/fo/armor") 
+
+
+
+
+function PLUGIN:HUDPaint()
 	if !LocalPlayer():getChar() then 
 		return 
 	end
@@ -198,14 +212,7 @@ hook.Add("HUDPaint","DrawHUDFO",function()
 			surface.DrawTexturedRectRotated( ScrW() - 100 - i * 7, ScrH() - 116, 24,30,0 )
 		end
 	end
-end)
 
-local compass = surface.GetTextureID("hud/fo/compass") 
-local npc = surface.GetTextureID("hud/fo/pointer2") 
-local player = surface.GetTextureID("hud/fo/player_found") 
-local objetive = surface.GetTextureID("hud/fo/objetive")
-
-hook.Add("HUDPaint","DRAWFOTEXT",function()
 
 	DrawBlur(90,ScrH() - 135,"HP",0)
 	DrawBlur(ScrW() - 95, ScrH() - 135,"STM",2)
@@ -242,15 +249,7 @@ hook.Add("HUDPaint","DRAWFOTEXT",function()
 	surface.SetTexture(compass)
 	surface.SetDrawColor(SCHEMA:GetColor())
 	SCHEMA.DrawPartialTexturedRect( 82, ScrH() - 97, 256, 64, (-LocalPlayer():GetAngles().y/360) * 1024, 0, 256, 64,1024,64 );
-end)
 
-local htick = surface.GetTextureID("hud/fo/tick") 
-local hbar = surface.GetTextureID("hud/fo/life_hud") 
-local henemy = surface.GetTextureID("hud/fo/enemy_health") 
-local armor = surface.GetTextureID("hud/fo/armor") 
-
-hook.Add("HUDPaint","FOHL",function()
-	
 	surface.SetTexture(hbar)
 	surface.SetDrawColor(SCHEMA:GetColor())
 	surface.DrawTexturedRectRotated( 264, ScrH() - 40, 390,200,0 )
@@ -296,7 +295,12 @@ hook.Add("HUDPaint","FOHL",function()
 			surface.DrawTexturedRectRotated( ScrW() / 2 + 10 + i * 6, ScrH() - 100, 23,30,0 )
 		end
 	end
-end)
+end
+
+
+
+
+
 
 function SCHEMA.DrawPartialTexturedRect(x, y, w, h, partx, party, partw, parth, texw, texh)
 
@@ -339,27 +343,3 @@ function SCHEMA.DrawPartialTexturedRect(x, y, w, h, partx, party, partw, parth, 
     }
     surface.DrawPoly( vertexData )
 end
-
-hook.Add("StartChat", "MoveChatbox", function()
-
-	if (nut.gui && IsValid(nut.gui.chat) && !nut.gui.chat.Moved) then
-
-		local chatbox = nut.gui.chat
-		local entry = chatbox.entry
-
-		local chatboxX, chatboxY = chatbox:GetPos()
-		local entryX, entryY = entry:GetPos()
-
-		local distX = entryX - chatboxX
-		local distY = entryY - chatboxY
-
-		local newX = chatboxX
-		local newY = chatboxY - 110
-
-		chatbox:SetPos(newX, newY)
-		entry:SetPos(newX + distX, newY + distY)
-
-		nut.gui.chat.Moved = true
-	end
-
-end)
