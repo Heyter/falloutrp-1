@@ -36,18 +36,27 @@ if CLIENT then
 	end
 
 	netstream.Hook("foNotify", pushNotify)
-
-	function nut.util.notify(message, client) -- Hijack the nutscript notification system and route it through fallout notify
-		LocalPlayer():notify(message)
-	end
+	netstream.Hook("foNotifyLocalized", function(message, translateCodes, state, colour)
+		pushNotify(L(message, unpack(translateCodes)), (state or nil), (colour or nil))
+	end)
 end
 
+function nut.util.notify(message, client) -- Hijack the nutscript notification system and route it through fallout notify
+	(client or LocalPlayer()):foNotify(message)
+end
 
-function playerMeta:notify(message, state, colour) -- State can be: normal, sad, caps, lock, gift, ncr, legion, bos, key, map, pain and radio | Colour will auto set based on clients ui colour
+function playerMeta:foNotify(message, state, colour) -- State can be: normal, sad, caps, lock, gift, ncr, legion, bos, key, map, pain and radio | Colour will auto set based on clients ui colour
 	if SERVER then
 		netstream.Start(self, "foNotify", message, (state or nil), (colour or nil))
 	else
-		pushNotify(message, state, colour)
+		pushNotify(message, (state or nil), (colour or nil))
 	end
 end
 
+function playerMeta:foNotifyLocalized(message, translateCodes, state, colour) -- Translate codes is a table
+	if SERVER then
+		netstream.Start(self, "foNotifyLocalized", message, translateCodes, (state or nil), (colour or nil))
+	else
+		pushNotify(L(message, unpack(translateCodes)), (state or nil), (colour or nil))
+	end
+end
