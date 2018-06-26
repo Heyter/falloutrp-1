@@ -36,6 +36,10 @@ if CLIENT then
 	end
 
 	netstream.Hook("foNotify", pushNotify)
+
+	function nut.util.notify(message, client) -- Hijack the nutscript notification system and route it through fallout notify
+		LocalPlayer():notify(message)
+	end
 end
 
 
@@ -47,6 +51,3 @@ function playerMeta:notify(message, state, colour) -- State can be: normal, sad,
 	end
 end
 
-function nut.util.notify(message, client) -- Hijack the nutscript notification system and route it through fallout notify
-	(client or LocalPlayer()):notify(message)
-end
