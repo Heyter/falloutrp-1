@@ -48,5 +48,5 @@ function playerMeta:notify(message, state, colour) -- State can be: normal, sad,
 end
 
 function nut.util.notify(message, client) -- Hijack the nutscript notification system and route it through fallout notify
-	client:notify(message)
+	(client or LocalPlayer()):notify(message)
 end
