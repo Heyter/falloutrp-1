@@ -1,4 +1,3 @@
-
 SCHEMA.disabledPlugins = SCHEMA.disabledPlugins or {}
 
 -- Disable plugins
