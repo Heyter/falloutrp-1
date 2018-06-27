@@ -19,17 +19,13 @@ clothes = clothes or {} -- Clothing
 
 --[[ SCHEMA INCLUDES ]]--
 
-local Include = nut.util.include
-local IncludeDir = nut.util.includeDir
+nut.util.includeDir("libs", nil, true)
+nut.util.includeDir("meta", nil, true)
+nut.util.includeDir("modules", nil, true)
+nut.util.includeDir("derma", nil, true)
 
-fo = fo or {}
-IncludeDir("libs", nil, true)
-IncludeDir("meta", nil, true)
-IncludeDir("modules", nil, true)
-IncludeDir("derma", nil, true)
-
-Include("resources.lua", "server")
-Include("fonts.lua", "client")
+nut.util.include("resources.lua", "server")
+nut.util.include("fonts.lua", "client")
 
 --[[ SCHEMA CONFIGURATION ]]--
 
