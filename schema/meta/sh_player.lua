@@ -1,4 +1,4 @@
-local playerMeta = FindMetaTable("Player")
+local Player = FindMetaTable("Player")
 
 if CLIENT then
 	local forpNotifyQueue = forpNotifyQueue or {}
@@ -45,7 +45,7 @@ function nut.util.notify(message, client) -- Hijack the nutscript notification s
 	(client or LocalPlayer()):foNotify(message)
 end
 
-function playerMeta:foNotify(message, state, colour) -- State can be: normal, sad, caps, lock, gift, ncr, legion, bos, key, map, pain and radio | Colour will auto set based on clients ui colour
+function Player:foNotify(message, state, colour) -- State can be: normal, sad, caps, lock, gift, ncr, legion, bos, key, map, pain and radio | Colour will auto set based on clients ui colour
 	if SERVER then
 		netstream.Start(self, "foNotify", message, (state or nil), (colour or nil))
 	else
@@ -53,10 +53,19 @@ function playerMeta:foNotify(message, state, colour) -- State can be: normal, sa
 	end
 end
 
-function playerMeta:foNotifyLocalized(message, translateCodes, state, colour) -- Translate codes is a table
+function Player:foNotifyLocalized(message, translateCodes, state, colour) -- Translate codes is a table
 	if SERVER then
 		netstream.Start(self, "foNotifyLocalized", message, translateCodes, (state or nil), (colour or nil))
 	else
 		pushNotify(L(message, unpack(translateCodes)), (state or nil), (colour or nil))
 	end
+end
+
+function Player:GetLookedEntity(dist)
+    local d = {}
+    d.filter = ply
+    d.start = self:GetShootPos()
+    d.endpos = data.start + self:GetAimVector()*dist
+
+    return util.TraceLine(d).Entity
 end
