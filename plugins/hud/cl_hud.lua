@@ -165,6 +165,8 @@ local armor = surface.GetTextureID("hud/fo/armor")
 
 
 function PLUGIN:HUDPaint()
+	if ( hook.Run("FalloutHUDShouldDraw") == false ) then return end
+
 	if !LocalPlayer():getChar() then 
 		return 
 	end
