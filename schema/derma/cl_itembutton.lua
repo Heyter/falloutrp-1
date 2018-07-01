@@ -55,4 +55,4 @@ function PANEL:SetItem(name, id, func)
 	self.itmFunc = func
 end
 	
-vgui.Register("fo_itembtn", PANEL, "fo_btn")
+vgui.Register("forpItemButton", PANEL, "forpButton")
