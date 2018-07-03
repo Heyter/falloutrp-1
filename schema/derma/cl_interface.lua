@@ -1,46 +1,52 @@
 local INTERFACE = {}
 INTERFACE.DrawBlur = true
 INTERFACE.HideFalloutHud = true
-INTERFACE.LockCursor = true
-INTERFACE.infosHeight = 0
-INTERFACE.buttonsHeight = 0
+
 INTERFACE.borderW = 0
 INTERFACE.borderH = 0
 
-local yScrMargin = 42
-local xScrMargin = 42
-local xBorderMargin = 5
-local yBorderMargin = 5
-
-local lineHeight = 3
-local fadeWidth = 30
-
-
-
+INTERFACE.infoHeight = 0
+INTERFACE.buttonHeight = 0
+INTERFACE.infoValues = {}
 
 function INTERFACE:Init()
 	if ( fo.ui.interface ) then
 		fo.ui.interface:Remove()
 	end
-
 	fo.ui.interface = self
+
 	self:SetSize(sW(), sH())
 
-	if ( self.LockCursor ) then
-		fo.ui.LockCursor()
-	end
+	fo.ui.LockCursor()
+
+	self:OnInit()
+end
+
+function INTERFACE:OnInit()
 end
 
 function INTERFACE:OnRemove()
 	fo.ui.UnlockCursor()
+	self:OnRemoved()
 end
 
+function INTERFACE:OnRemoved()
+end
 
+function INTERFACE:FixInfoPanelsX()
+	for _, p in pairs(self.infoValues) do
+		if ( IsValid(p) ) then
+			p:SetEndPosition()
+		end
+	end
+end
 
-
+-- Border sizing
 function INTERFACE:SetBorderSize(w, h)
 	self.borderW = w
 	self.borderH = h
+
+	self:FixInfoPanelsX()
 end
 
 function INTERFACE:GetBorderSize()
@@ -55,12 +61,22 @@ function INTERFACE:GetBorderTall()
 	return self.borderH
 end
 
+local yScrMargin = 42
+local xScrMargin = 42
+local xBorderMargin = 26
+local yBorderMargin = 28
+
+local lineHeight = 3
+local fadeWidth = 30
+
+-- Borders fades materials
 local fadeToTop = Material("forp/ui/interface/shared/line/fade_to_top.png")
 local fadeToRight = Material("forp/ui/interface/shared/line/fade_to_right.png")
 
 function INTERFACE:Paint(w, h)
 	surface.SetDrawColor( SCHEMA:GetColor() )
 
+	-- Paint borders
 	if ( self.borderW >= fadeWidth and self.borderH >= fadeWidth ) then
 		local vSolidWidth = self.borderW - fadeWidth
 		local hSolidWidth = self.borderH - fadeWidth
@@ -74,55 +90,71 @@ function INTERFACE:Paint(w, h)
 		surface.DrawTexturedRect( xScrMargin + vSolidWidth, sH() - yScrMargin, fadeWidth, lineHeight )
 	end
 
-	if ( self.DrawMain ) then
-		self:DrawMain()
-	end
+	-- Method to draw the main object
+	self:DrawMain()
 end
 
+function INTERFACE:DrawMain()
+end
 
-
-
-local elementOffset = 0
+local elementOffset = 30
 local textElement = "forpLabel"
 local buttonElement = "forpButton"
 
 function INTERFACE:AddInfoTab(title, value)
-	local titlePnl = self:Add(textElement); titlePnl:SetText(title or "")
-	local valuePnl = self:Add(textElement); valuePnl:SetText(value or "")
+	local titleP = self:Add(textElement)
 
-	local titleW, titleH = titlePnl:GetSize()
-	local valueW, valueH = valuePnl:GetSize()
-	titlePnl:SetPos(xScrMargin + xBorderMargin + lineHeight, sH() - titleH - yScrMargin - yBorderMargin - self.infosHeight)
-	valuePnl:SetPos(0, sH() - valueH - yScrMargin - yBorderMargin - self.infosHeight)
+		local titleH = titleP:GetTall()
+		titleP:SetText(title or "")
+		titleP:SetPos(xScrMargin + lineHeight + xBorderMargin, sH() - yScrMargin - lineHeight - yBorderMargin - self.infoHeight - titleH)
 
-	valuePnl:SetXEnd(xScrMargin - valueW + self.borderW)
-	valuePnl:ApplyXEnd()
+	local valueP = self:Add(textElement)
+	
+		table.insert(self.infoValues, valueP)
+		-- Move value panel just before the end of the info border
+		valueP.SetEndPosition = function(this)
+			local parent = this:GetParent()
 
-	local biggerHeight = math.max(titleH, valueH)
-	self.infosHeight = self.infosHeight + biggerHeight + elementOffset
+			local y = select(2, this:GetPos())
+			this:SetPos(xScrMargin + lineHeight + self.borderW - this:GetWide(), y)
+		end
+		valueP.OnTextChanged = valueP.SetEndPosition
 
-	return titlePnl, valuePnl
+		local valueH = valueP:GetTall()
+		valueP:SetText(value or "")
+		valueP:SetPos(0, sH() - yScrMargin - lineHeight - yBorderMargin - self.infoHeight - valueH)
+		valueP:SetEndPosition()
+
+	-- Update info height
+	self.infoHeight = self.infoHeight +  ( math.max(titleH, valueH) + elementOffset )
+
+	return titleP, valueP
 end
 
 function INTERFACE:AddButton(title)
-	local buttonPnl = self:Add(buttonElement)
+	local buttonP = self:Add(buttonElement)
+	
+		-- Move button panel before the end of the screen
+		buttonP.SetEndPosition = function(this)
+			local parent = this:GetParent()
 
-	buttonPnl.OnTextChanged = function(this)
-		local w = this:GetWide()
-		local y = select(2, this:GetPos())
-		this:SetPos(sW() - w - xScrMargin - xBorderMargin - lineHeight, y)
-	end
+			local y = select(2, this:GetPos())
+			this:SetPos(sW() - xScrMargin - lineHeight - this:GetWide(), y)
+		end
+		buttonP.OnTextChanged = buttonP.SetEndPosition
 
-	local h = buttonPnl:GetTall()
-	self.buttonsHeight = self.buttonsHeight + h + elementOffset
+		local buttonH = buttonP:GetTall()
+		buttonP:SetText(title or "")
+		buttonP:SetPos(0, sH() - yScrMargin - lineHeight - yBorderMargin - self.buttonHeight - buttonH)
+		buttonP:SetEndPosition()
 
-	return buttonPnl
+	-- Update info height
+	self.buttonHeight = self.buttonHeight +  ( buttonH + elementOffset )
+
+	return buttonP
 end
 
 vgui.Register("forpInterface", INTERFACE, "Panel")
-
-
-
 
 hook.Add("FalloutHUDShouldDraw", "forp_Interface", function()
 	local interface = fo.ui.interface
