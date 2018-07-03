@@ -19,6 +19,10 @@ function BUTTON:SetText(text)
     if ( self.autoSizeToContents ) then
         self:SizeToContents()
 	end
+
+	if ( self.OnTextChanged ) then
+		self:OnTextChanged()
+	end
 end
 
 function BUTTON:Paint(w, h)
