@@ -14,10 +14,19 @@ function fo.draw.WrappedText(lines, font, color, x, y, gap)
 end
 
 function fo.draw.TexturedRectRotated(mat, x, y, w, h, rot, col)
-    rot = rot or 0
-    col = col or SCHEMA:GetColor()
+    local rot = rot or 0
+    local col = col or SCHEMA:GetColor()
 
     surface.SetDrawColor(col)
     surface.SetMaterial(mat)
     surface.DrawTexturedRectRotated(x, y, w, h, rot)
+end
+
+function fo.draw.FalloutBlur(x, y, w, h, thickness)
+	local col = Color(0,0,0)
+	local thickness = thickness or 16
+
+	for i = 0, thickness do
+		draw.RoundedBox(8, x + (i * 2), y + (i * 2), w - (i * 4), h - (i * 4), Color(col.r, col.g, col.b, 2 + (i * 4)))
+	end
 end
