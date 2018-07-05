@@ -12,5 +12,5 @@ PLUGIN.SpamTime = 0.1
 PLUGIN.MaxLookDistance = 25
 
 nut.util.include("sv_session.lua")
-nut.util.include("sh_freeze.lua")
 nut.util.include("cl_interface.lua")
+nut.util.include("derma/cl_interface.lua")

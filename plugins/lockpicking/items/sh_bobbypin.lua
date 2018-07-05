@@ -1,3 +1,5 @@
+local PLUGIN = PLUGIN
+
 ITEM.name = "Bobbypin Box"
 ITEM.model = "models/ns_fallout/bobbypinbox.mdl"
 ITEM.width = 1
@@ -99,7 +101,7 @@ ITEM.functions.use = {
 	onRun = function(item)
 		local client = item.player
 		
-		local session = FO_LP.StartSession(client:GetEyeTrace().Entity, client, item)
+		local session = PLUGIN.StartSession(client:GetEyeTrace().Entity, client, item)
 
 		if type(session) == "string" then
 			client:notifyLocalized(session)
@@ -120,7 +122,7 @@ ITEM.functions.use = {
 		local data = {}
 		data.filter = ply
 		data.start = ply:GetShootPos()
-		data.endpos = data.start + ply:GetAimVector()*FO_LP.MaxLookDistance
+		data.endpos = data.start + ply:GetAimVector()*PLUGIN.MaxLookDistance
 
 		local ent = util.TraceLine(data).Entity
 
@@ -129,10 +131,10 @@ ITEM.functions.use = {
 		end
 
 		if (SERVER) then
-			if (!FO_LP.IsDoorLocked(ent)) then
+			if (!PLUGIN.IsDoorLocked(ent)) then
 				ply:notifyLocalized("lpNotLocked")
 				return false
-			elseif (FO_LP.GetPlayerPickingDoor(ent)) then
+			elseif (PLUGIN.GetPlayerPickingDoor(ent)) then
 				ply:notifyLocalized("lpAlrLpcked")
 				return false
 			end

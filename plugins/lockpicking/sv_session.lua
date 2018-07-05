@@ -1,22 +1,24 @@
+local PLUGIN = PLUGIN
+
 local session = {}
 session.__index = session
 
-FO_LP.Sessions = FO_LP.Sessions or {}
+PLUGIN.Sessions = PLUGIN.Sessions or {}
 
 local function distCheck(ply, door)
 	local data = {}
 	data.filter = ply
 	data.start = ply:GetShootPos()
-	data.endpos = data.start + ply:GetAimVector()*FO_LP.MaxLookDistance
+	data.endpos = data.start + ply:GetAimVector()*PLUGIN.MaxLookDistance
 
 	return (util.TraceLine(data).Entity == door)
 end
 
-function FO_LP.IsDoorLocked(door)
+function PLUGIN.IsDoorLocked(door)
 	return door:GetSaveTable().m_bLocked or door.locked or false
 end
 
-function FO_LP.StartSession(door, ply, item)
+function PLUGIN.StartSession(door, ply, item)
 	local self = setmetatable({}, session)
 
 	-- Change wep to hands and save the old one
@@ -36,7 +38,7 @@ function FO_LP.StartSession(door, ply, item)
 	ply:doStaredAction(door, function()
 		if (IsValid(ply)) then
 			-- Insert in the sessions table
-			FO_LP.Sessions[self] = true
+			PLUGIN.Sessions[self] = true
 			self.LastActivity = CurTime()
 		
 			-- Start Client interface
@@ -64,7 +66,7 @@ function FO_LP.StartSession(door, ply, item)
 	return self
 end
 
-function FO_LP.GetPlayerPickingDoor(door)
+function PLUGIN.GetPlayerPickingDoor(door)
 	door:RunOnAllDoors(function(entity, args)
 		local session = entity.LockpickSession
 
@@ -111,7 +113,7 @@ function session:RemoveVars()
 		ply.LockpickFreeze = nil
 	end
 
-	FO_LP.Sessions[self] = nil
+	PLUGIN.Sessions[self] = nil
 	self = nil
 end
 
@@ -174,12 +176,12 @@ function session:Stop(communicateToClient, failed)
 	self:StopSound("enter")
 
 	-- Share rounded bobbypin health to client
-	local oldHealth = item:getData("health")
+	local oldHealth = item:getData("health", 100)
 	item:setData("health", math.Round(oldHealth))
 	item:setData("health", oldHealth, false)
 
 	-- Unfreeze player and restore his old weapon after the ScreenFade is done
-	timer.Simple(FO_LP.FadeTime,function()
+	timer.Simple(PLUGIN.FadeTime,function()
 		ply.LockpickFreeze = nil
 		ply:SelectWeapon(self.OldWep)
 		timer.Simple(0.1, function()
@@ -214,10 +216,10 @@ netstream.Hook("lpRotat", function(ply, state, pickAng)
 				session.OldPinAngle = pickAng
 
 				local ang, isLastAng = session:GetClientMaxAng()
-				session.LockAngle = math.max(latency * -FO_LP.TurningSpeed, ang)
+				session.LockAngle = math.max(latency * -PLUGIN.TurningSpeed, ang)
 
 				-- Avoid spamming requests to know the unlock angle
-				if (session.LastRotating && (time - session.LastRotating < FO_LP.SpamTime)) then
+				if (session.LastRotating && (time - session.LastRotating < PLUGIN.SpamTime)) then
 					session:Stop()
 					return
 				end
@@ -226,7 +228,7 @@ netstream.Hook("lpRotat", function(ply, state, pickAng)
 				session.RotatingLock = true
 			end
 		else
-			session.LockAngle = math.min(session.LockAngle + (latency * FO_LP.ReleasingSpeed), 0)
+			session.LockAngle = math.min(session.LockAngle + (latency * PLUGIN.ReleasingSpeed), 0)
 			session.RotatingLock = false
 		end
 
@@ -314,13 +316,13 @@ end
 
 function session:GetMaxLockAngle(zone)
 	if (zone == unlockZone) then
-		return FO_LP.UnlockMaxAngle
+		return PLUGIN.UnlockMaxAngle
 	elseif (zone == weakZoneLeft) then
-		return math.min(FO_LP.UnlockMaxAngle * (1 - ((self.UnlockLimitA - self.PinAngle) / (weakSize - unlockSize))), FO_LP.HardMaxAngle)
+		return math.min(PLUGIN.UnlockMaxAngle * (1 - ((self.UnlockLimitA - self.PinAngle) / (weakSize - unlockSize))), PLUGIN.HardMaxAngle)
 	elseif (zone == weakZoneRight) then
-		return math.min(FO_LP.UnlockMaxAngle * (1 - math.abs((self.UnlockLimitB - self.PinAngle) / (weakSize - unlockSize))), FO_LP.HardMaxAngle)
+		return math.min(PLUGIN.UnlockMaxAngle * (1 - math.abs((self.UnlockLimitB - self.PinAngle) / (weakSize - unlockSize))), PLUGIN.HardMaxAngle)
 	else
-		return FO_LP.HardMaxAngle
+		return PLUGIN.HardMaxAngle
 	end
 end
 
@@ -335,7 +337,7 @@ function session:StopCheck()
 	
 	-- Avoid afk
 	if ((time - self.LastActivity) > 20) then
-		ply:ChatPrint("Lockpicking stopped due to inactivity")
+		ply:foNotify("Lockpicking stopped due to inactivity")
 		self:Stop()
 		return
 	end
@@ -343,7 +345,7 @@ function session:StopCheck()
 	-- Check that the player is looking the door and near from it
 	if (time > (self.NextDistCheck or 0)) then
 		if (!distCheck(ply, door)) then
-			ply:ChatPrint("You're too far from the door")
+			ply:foNotify("You're too far from the door")
 			self:Stop()
 		end
 
@@ -363,7 +365,7 @@ function session:MakeShareTable(maxAng)
 
 		local realAng = ((i - 1) * -30) + (math.max(maxAng - (i-1) * -30, -30))
 
-		if (realAng != FO_LP.HardMaxAngle) then
+		if (realAng != PLUGIN.HardMaxAngle) then
 			index = index + 1
 			self.ShareTable[index] = {}
 			self.ShareTable[index].RealAng = realAng
@@ -393,7 +395,7 @@ function session:ShareAngle(maxAng)
 				local curAng = self.LockAngle
 				local limit = math.min(realAng + 30, 0)
 
-				if (math.abs((limit - curAng) / FO_LP.TurningSpeed) - 0.12 > latency) then
+				if (math.abs((limit - curAng) / PLUGIN.TurningSpeed) - 0.12 > latency) then
 					ang.Sent = true
 					ang.SendTime = SysTime()
 					netstream.Start(ply, "lpMax", self.PinAngle, realAng)
@@ -435,11 +437,11 @@ function session:GetClientMaxAng()
 		end
 
 		if (angAmount == 0) then
-			return FO_LP.HardMaxAngle, true
+			return PLUGIN.HardMaxAngle, true
 		end
 	end
 	
-	return FO_LP.HardMaxAngle, false
+	return PLUGIN.HardMaxAngle, false
 end
 
 function session:Think()
@@ -454,7 +456,7 @@ function session:Think()
 	local exceedMax
 	
 	if (self.RotatingLock && !self.ChangingPin) then
-		self.LockAngle = self.LockAngle - FO_LP.TurningSpeed * FrameTime()
+		self.LockAngle = self.LockAngle - PLUGIN.TurningSpeed * FrameTime()
 		
 		-- Check if the lock is forced
 		if (self.LockAngle < curMaxLockAngle) then
@@ -470,7 +472,7 @@ function session:Think()
 		end
 		
 	else
-		self.LockAngle = self.LockAngle + ( FO_LP.ReleasingSpeed * FrameTime())
+		self.LockAngle = self.LockAngle + ( PLUGIN.ReleasingSpeed * FrameTime())
 		self.LockAngle = math.min(self.LockAngle, 0)
 
 		self.CylinderTurned = false
@@ -481,7 +483,7 @@ function session:Think()
 
 	if (exceedMax) then
 
-		if (self.AskingSuccess && self.LockAngle == FO_LP.UnlockMaxAngle) then
+		if (self.AskingSuccess && self.LockAngle == PLUGIN.UnlockMaxAngle) then
 			self:StopSound("tension")
 			self:Success()
 		else
@@ -521,7 +523,7 @@ end
 -- Call Think on every session
 local Think = session.Think
 hook.Add("Think", "LockpickSessionsThink", function()
-	for k, v in pairs(FO_LP.Sessions) do if (!k.IsFreeze) then Think(k) end end
+	for k, v in pairs(PLUGIN.Sessions) do if (!k.IsFreeze) then Think(k) end end
 end)
 
 -- Events that stop the sessions
