@@ -23,6 +23,7 @@ nut.util.includeDir("libs", nil, true)
 nut.util.includeDir("meta", nil, true)
 nut.util.includeDir("modules", nil, true)
 nut.util.includeDir("derma", nil, true)
+nut.util.includeDir("hooks", nil, true)
 
 nut.util.include("resources.lua", "server")
 nut.util.include("fonts.lua", "client")

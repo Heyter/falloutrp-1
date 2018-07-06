@@ -50,7 +50,7 @@ function PANEL:Paint(w, h)
     surface.DrawTexturedRect(0, 0, iconScale, iconScale)
     
     -- Drawing text
-    surface.SetTextColor(self.colour)   
+    surface.SetTextColor(self.colour)
     surface.SetFont("Monofonto24")
     fo.ui.DrawWrappedText(self.content, "Monofonto24", self.colour, ScrW()*.068, ScrH()*.02)
 end
