@@ -27,6 +27,11 @@ function fo.draw.FalloutBlur(x, y, w, h, thickness)
 	local thickness = thickness or 16
 
 	for i = 0, thickness do
-		draw.RoundedBox(8, x + (i * 2), y + (i * 2), w - (i * 4), h - (i * 4), Color(col.r, col.g, col.b, 2 + (i * 4)))
+		local xChange, yChange, wChange, hChange = x + (i * 2), y + (i * 2), w - (i * 4), h - (i * 4)
+		draw.RoundedBox(8, xChange, yChange, wChange, hChange, Color(col.r, col.g, col.b, 2 + (i * 4)))
+
+		if i == thickness then
+			return xChange, yChange, wChange, hChange -- We return the size of the inner frame so we can use it in panels to make the UI, this might not be the best way.
+		end
 	end
 end
