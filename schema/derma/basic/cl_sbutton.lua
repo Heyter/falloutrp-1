@@ -1,7 +1,7 @@
 local PANEL = {}
 
 function PANEL:Init()
-	self:SetTextColor(SCHEMA:GetFalloutColor())
+	self:SetTextColor(fo.ui.GetHUDColor())
 	self:SetFont("Monofonto32")
 	self:SetContentAlignment(6)
 	self:SetTall(self:GetTall() + 16)

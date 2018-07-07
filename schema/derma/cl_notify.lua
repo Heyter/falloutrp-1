@@ -2,7 +2,7 @@ local PANEL = {}
 local fontWidth, fontHeight = surface.GetTextSize("Monofonto24")
 
 function PANEL:Init()
-    self.colour = SCHEMA:GetColor()
+    self.colour = fo.ui.GetHUDColor()
     self.state = "normal"
     self.content = {"No message content error!"}
     self:SetPos(0,0)

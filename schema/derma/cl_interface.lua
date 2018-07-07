@@ -74,7 +74,7 @@ local fadeToTop = Material("forp/ui/interface/shared/line/fade_to_top.png")
 local fadeToRight = Material("forp/ui/interface/shared/line/fade_to_right.png")
 
 function INTERFACE:Paint(w, h)
-	surface.SetDrawColor( SCHEMA:GetColor() )
+	surface.SetDrawColor( fo.ui.GetHUDColor() )
 
 	-- Paint borders
 	if ( self.borderW >= fadeWidth and self.borderH >= fadeWidth ) then
@@ -169,5 +169,29 @@ hook.Add("HUDPaintBackground", "forp_Interface", function()
 
 	if ( IsValid(interface) and interface.DrawBlur ) then
 		Derma_DrawBackgroundBlur(interface)
+	end
+end)
+
+hook.Add("OnSpawnMenuOpen", "lpRestrictSpawnMenu", function()
+	local interface = fo.ui.interface
+
+	if ( IsValid(interface) ) then
+		return false
+	end
+end)
+
+hook.Add("CanDrawDoorInfo", "lpHideDoorInfo", function()
+	local interface = fo.ui.interface
+
+	if ( IsValid(interface) ) then
+		return false
+	end
+end)
+
+hook.Add("CanDrawEntInt", "lpHideDoorInfo", function()
+	local interface = fo.ui.interface
+
+	if ( IsValid(interface) ) then
+		return false
 	end
 end)
