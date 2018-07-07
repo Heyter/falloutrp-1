@@ -9,6 +9,7 @@ function SCHEMA:PluginShouldLoad(uniqueID)
     return ( !self.disabledPlugins[uniqueID] )
 end
 
+
 -- Override default config 
 function SCHEMA:OverrideConfig(key, value)
     local cfg = nut.config.stored[key]

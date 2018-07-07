@@ -68,6 +68,7 @@ function fo.ui.LockCursor()
 	gui.EnableScreenClicker = function() end
 end
 
+
 -- Hide cursor and enable gui.EnableScreenClicker
 function fo.ui.UnlockCursor()
 	gui.EnableScreenClicker = fo.ui.oldEnableScreenClicker
@@ -88,6 +89,7 @@ function fo.ui.DrawWrappedText(lines, font, color, x, y, gap)
 	end
 end
 
+
 -- Draw a rotated texture from his center
 function fo.ui.DrawTexturedRectRotatedPoint(mat, x, y, w, h, rot, x0, y0, col)
 	local c = math.cos( math.rad( rot ) )
@@ -97,6 +99,7 @@ function fo.ui.DrawTexturedRectRotatedPoint(mat, x, y, w, h, rot, x0, y0, col)
 
 	surface.DrawTexturedRectRotated(x + newx, y + newy, w, h, rot, col)
 end
+
 
 -- Draw original Fallout blur
 function fo.ui.DrawFalloutBlur(x, y, w, h, thickness)

@@ -1,19 +1,18 @@
 fo.string = fo.string or {}
 
--- surface
+
 local setFont = surface.SetFont
 local getTextSize = surface.GetTextSize
--- string
 local strSub = string.sub
 local strLen = string.len
--- math
 local mathCeil = math.ceil
--- table
 local tblInsert = table.insert
 local tblConcat = table.concat
 
+
 local DOTS = "..."
 
+-- Breaks text into lines
 function fo.string.WrapText( text, font, wLimit, dotLimit )
 	local lines = {}
 	local index = 1

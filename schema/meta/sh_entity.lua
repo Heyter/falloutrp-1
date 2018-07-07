@@ -1,5 +1,6 @@
 local Entity = FindMetaTable( "Entity" )
 
+
 local VARS_TO_CLONE = {
 	"Model",
 	"Pos",
@@ -7,7 +8,8 @@ local VARS_TO_CLONE = {
 	"Color",
 	"Skin",
 }
-	
+
+-- Make an entity look like another
 function Entity:CloneVarsOn( ent )
 	-- Vars
 	for _, v in pairs( VARS_TO_CLONE ) do
@@ -39,6 +41,7 @@ function Entity:CloneVarsOn( ent )
 end
 
 
+-- Weld an entity to another
 function Entity:AttachTo(otherEntity)
 	constraint.Weld(self, otherEntity, 0, 0, 0, false)
 

@@ -1,14 +1,14 @@
 fo.string = fo.string or {}
 
--- string
+
 local strSub = string.sub
 local strLen = string.len
--- math
 local mathCeil = math.ceil
--- table
 local tblInsert = table.insert
 local tblConcat = table.concat
 
+
+-- Explode a string with multiple separators
 function fo.string.Explode( seperators, str )
 	local p = "[^"..tblConcat(seperators).."]+"
 

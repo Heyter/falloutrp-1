@@ -1,5 +1,6 @@
 local Player = FindMetaTable("Player")
 
+
 if ( CLIENT ) then
 	local forpNotifyQueue = forpNotifyQueue or {}
 
@@ -26,7 +27,6 @@ if ( CLIENT ) then
 		end)
 	end
 
-
 	function pushNotify(message, state, colour)
 		table.insert(forpNotifyQueue, {message, (state or nil), (colour or nil)}) -- Put in queue
 
@@ -41,11 +41,13 @@ if ( CLIENT ) then
 	end)
 end
 
-function nut.util.notify(message, client) -- Hijack the nutscript notification system and route it through fallout notify
+-- Hijack the nutscript notification system and route it through fallout notify
+function nut.util.notify(message, client)
 	(client or LocalPlayer()):foNotify(message)
 end
 
-function Player:foNotify(message, state, colour) -- State can be: normal, sad, caps, lock, gift, ncr, legion, bos, key, map, pain and radio | Colour will auto set based on clients ui colour
+-- State can be: normal, sad, caps, lock, gift, ncr, legion, bos, key, map, pain and radio | Colour will auto set based on clients ui colour
+function Player:foNotify(message, state, colour)
 	if ( SERVER ) then
 		netstream.Start(self, "foNotify", message, (state or nil), (colour or nil))
 	else
@@ -53,6 +55,7 @@ function Player:foNotify(message, state, colour) -- State can be: normal, sad, c
 	end
 end
 
+-- Notify a translated message
 function Player:foNotifyLocalized(message, translateCodes, state, colour) -- Translate codes is a table
 	if ( SERVER ) then
 		netstream.Start(self, "foNotifyLocalized", message, translateCodes, (state or nil), (colour or nil))
@@ -62,6 +65,7 @@ function Player:foNotifyLocalized(message, translateCodes, state, colour) -- Tra
 end
 
 
+-- Get the looked entity for a certain distance
 function Player:GetLookedEntity(dist)
     local d = {}
     d.filter = ply
@@ -72,6 +76,7 @@ function Player:GetLookedEntity(dist)
 end
 
 
+-- Freeze the player movements
 function Player:FreezeMove(state, share)
 	self:SetVar("movementsFreeze", state)
 	
@@ -100,6 +105,7 @@ if ( CLIENT ) then
 end
 
 
+-- Freeze weapon changing
 function Player:FreezeWeapon(state, share)
 	self:SetVar("weaponFreeze", state)
 	
