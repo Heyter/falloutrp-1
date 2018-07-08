@@ -91,13 +91,13 @@ end
 
 
 -- Draw a rotated texture from his center
-function fo.ui.DrawTexturedRectRotatedPoint(mat, x, y, w, h, rot, x0, y0, col)
+function fo.ui.DrawTexturedRectRotatedPoint(x, y, w, h, rot, x0, y0)
 	local c = math.cos( math.rad( rot ) )
 	local s = math.sin( math.rad( rot ) )
 	local newx = y0 * s - x0 * c
 	local newy = y0 * c + x0 * s
 
-	surface.DrawTexturedRectRotated(x + newx, y + newy, w, h, rot, col)
+	surface.DrawTexturedRectRotated(x + newx, y + newy, w, h, rot)
 end
 
 
