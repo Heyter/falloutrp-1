@@ -4,7 +4,9 @@ fo.ui = fo.ui or {}
 -- Get a number multiplied by screen wide
 function sW(num)
 	local scrW = ScrW()
-	scrW = scrW * num
+	if ( num ) then
+		scrW = scrW * num
+	end
 	
 	return scrW
 end
@@ -12,7 +14,9 @@ end
 -- Get a number multiplied by screen height
 function sH(num)
 	local scrH = ScrH()
-	scrH = scrH * num
+	if ( num ) then
+		scrH = scrH * num
+	end
 
 	return scrH
 end
