@@ -4,21 +4,18 @@ fo.ui = fo.ui or {}
 -- Get a number multiplied by screen wide
 function sW(num)
 	local scrW = ScrW()
-	if ( num ) then
-		scrW = scrW * num
-	end
+	scrW = scrW * num
+	
 	return scrW
 end
 
 -- Get a number multiplied by screen height
 function sH(num)
 	local scrH = ScrH()
-	if ( num ) then
-		scrH = scrH * num
-	end
+	scrH = scrH * num
+
 	return scrH
 end
-
 
 -- Original Fallout colors
 forp_amber = Color(255, 182, 66, 255)
