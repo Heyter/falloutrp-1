@@ -70,11 +70,15 @@ function Player:GetLookedEntity(dist)
     local d = {}
     d.filter = ply
     d.start = self:GetShootPos()
-    d.endpos = data.start + self:GetAimVector()*dist
+    d.endpos = d.start + self:GetAimVector()*dist
 
     return util.TraceLine(d).Entity
 end
 
+-- Get half the ping of a player ( used for lag compensation )
+function Player:NetLag()
+    return self:Ping() / 2000
+end
 
 -- Freeze the player movements
 function Player:FreezeMove(state, share)
