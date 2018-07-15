@@ -21,10 +21,11 @@ clothes = clothes or {} -- Clothing
 ------------------
 --[[ INCLUDES ]]--
 ------------------
+nut.util.includeDir("libs", nil, true)
+nut.util.includeDir("meta", nil, true)
+nut.util.includeDir("modules", nil, true)
 nut.util.includeDir("hooks", nil, true)
-
-nut.util.include("resources.lua", "server")
-nut.util.include("fonts.lua", "client")
+nut.util.includeDir("derma", nil, true)
 
 -----------------------
 --[[ CONFIGURATION ]]--
@@ -41,5 +42,7 @@ SCHEMA:OverrideConfig("font", "Monofonto")
 ---------------
 --[[ FILES ]]--
 ---------------
+if ( SERVER ) then
 resource.AddWorkshop( "891790188" ) -- Fallout 3 Custom Backpacks
 resource.AddWorkshop( "203873185" ) -- Fallout Collection: Aid Props
+end
