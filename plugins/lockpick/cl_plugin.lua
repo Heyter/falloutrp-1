@@ -221,7 +221,7 @@ function PLUGIN:PlayerButtonDown(ply, btn)
 
     local panel = i.Panel
 
-	if (btn == KEY_A) then
+	if (btn == KEY_D) then
 		if (i.LockAngle ~= 0) then return end
 		if (i.Success) then return end
 		if (i.ChangingPin) then return end
@@ -241,7 +241,7 @@ function PLUGIN:PlayerButtonUp(ply, btn)
 	local i = self.Interface
     if ( not i ) then return end
     
-	if (btn == KEY_A) then
+	if (btn == KEY_D) then
 		if (not i.RotatingLock) then return end
 		if (i.Success) then return end
 		if (i.ChangingPin) then return end
