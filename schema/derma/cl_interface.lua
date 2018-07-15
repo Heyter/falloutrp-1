@@ -18,11 +18,6 @@ function INTERFACE:Init()
 	self:SetSize(sW(), sH())
 
 	fo.ui.LockCursor()
-
-	self:OnInit()
-end
-
-function INTERFACE:OnInit()
 end
 
 function INTERFACE:OnRemove()
