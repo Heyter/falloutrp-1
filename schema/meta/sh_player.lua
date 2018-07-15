@@ -56,7 +56,7 @@ function Player:foNotify(message, state, colour)
 end
 
 -- Notify a translated message
-function Player:foNotifyLocalized(message, translateCodes, state, colour) -- Translate codes is a table
+function Player:foNotifyLocalized(message, translateCodes, state, colour) -- Translate codes is a tables
 	if ( SERVER ) then
 		netstream.Start(self, "foNotifyLocalized", message, translateCodes, (state or nil), (colour or nil))
 	else
@@ -68,7 +68,7 @@ end
 -- Get the looked entity for a certain distance
 function Player:GetLookedEntity(dist)
     local d = {}
-    d.filter = ply
+    d.filter = self
     d.start = self:GetShootPos()
     d.endpos = d.start + self:GetAimVector()*dist
 
@@ -78,54 +78,4 @@ end
 -- Get half the ping of a player ( used for lag compensation )
 function Player:NetLag()
     return self:Ping() / 2000
-end
-
--- Freeze the player movements
-function Player:FreezeMove(state, share)
-	self:SetVar("movementsFreeze", state)
-	
-	if ( SERVER and share ) then
-		netstream.Start(self, "foFreezeMov", state)
-	end
-end
-
-local allowCommand
-hook.Add("StartCommand", "FreezeExceptInputs1", function(ply, cmd)
-    if ( ply:GetVar("movementsFreeze") ) then
-        cmd:SetButtons(0)
-    end
-end)
-
-hook.Add("Move", "FreezeExceptInputs2", function(ply, mvd)
-    if ( ply:GetVar("movementsFreeze") ) then
-        return true
-    end
-end)
-
-if ( CLIENT ) then
-	netstream.Hook("foFreezeMov", function(state)
-		LocalPlayer():FreezeMove(state)
-	end)
-end
-
-
--- Freeze weapon changing
-function Player:FreezeWeapon(state, share)
-	self:SetVar("weaponFreeze", state)
-	
-	if ( SERVER and share ) then
-		netstream.Start(self, "foFreezeWep", state)
-	end
-end
-
-hook.Add("PlayerSwitchWeapon", "lpRstrictSwitch", function(ply, oldWep, newWep)
-	if ( ply:GetVar("weaponFreeze") ) then
-        return true
-    end
-end)
-
-if ( CLIENT ) then
-	netstream.Hook("foFreezeWep", function(state)
-		LocalPlayer():FreezeWeapon(state)
-	end)
 end
