@@ -8,15 +8,7 @@ SCHEMA.desc = "An official NutScript schema"
 -----------------------
 --[[ GLOBAL TABLES ]]--
 -----------------------
-FO_CLTHG = FO_CLTHG or {} -- Clothing
-FO_CHRGUI = FO_CHRGUI or  {} -- Char menu
-FO_MRGNG = FO_MRGNG or {} -- Merging
 FO_AMB = FO_AMB or {} -- Ambience
-FO_HUD = FO_HUD or {} -- HUD
-FO_BAG = FO_BAG or {} -- Bags outfits
-FO_LP = FO_LP or {} -- Lockpicking
-loot = loot or {} -- Corpses
-clothes = clothes or {} -- Clothing
 
 ------------------
 --[[ INCLUDES ]]--
