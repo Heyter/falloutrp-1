@@ -15,6 +15,8 @@ function INTERFACE:Init()
 	end
 	fo.ui.interface = self
 
+	self:BlurBackground(true)
+	self:HideHUD(true)
 	self:SetSize(sW(), sH())
 
 	fo.ui.LockCursor()
@@ -61,7 +63,7 @@ local xScrMargin = 42
 local xBorderMargin = 26
 local yBorderMargin = 28
 
-local lineHeight = 3
+local lineHeight = 2
 local fadeWidth = 30
 
 -- Borders fades materials
@@ -150,43 +152,3 @@ function INTERFACE:AddButton(title)
 end
 
 vgui.Register("forpInterface", INTERFACE, "Panel")
-
-hook.Add("FalloutHUDShouldDraw", "forp_Interface", function()
-	local interface = fo.ui.interface
-
-	if ( IsValid(interface) and interface.HideFalloutHud ) then
-		return false
-	end
-end)
-
-hook.Add("HUDPaintBackground", "forp_Interface", function()
-	local interface = fo.ui.interface
-
-	if ( IsValid(interface) and interface.DrawBlur ) then
-		Derma_DrawBackgroundBlur(interface)
-	end
-end)
-
-hook.Add("OnSpawnMenuOpen", "lpRestrictSpawnMenu", function()
-	local interface = fo.ui.interface
-
-	if ( IsValid(interface) ) then
-		return false
-	end
-end)
-
-hook.Add("CanDrawDoorInfo", "lpHideDoorInfo", function()
-	local interface = fo.ui.interface
-
-	if ( IsValid(interface) ) then
-		return false
-	end
-end)
-
-hook.Add("CanDrawEntInt", "lpHideDoorInfo", function()
-	local interface = fo.ui.interface
-
-	if ( IsValid(interface) ) then
-		return false
-	end
-end)
