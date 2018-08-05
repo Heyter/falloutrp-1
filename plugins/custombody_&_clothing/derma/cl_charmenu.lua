@@ -1,233 +1,170 @@
+
+local PLUGIN = PLUGIN
 local PANEL = {}
-	local gradient = surface.GetTextureID("gui/gradient_up")
-	local gradient2 = surface.GetTextureID("gui/gradient_down")
-	local gradient3 = surface.GetTextureID("gui/center_gradient")
 
-	local backgroundNV = Material("thespireroleplay/vgui/charmenu/background.png")
+local gradient = surface.GetTextureID("gui/gradient_up")
+local gradient2 = surface.GetTextureID("gui/gradient_down")
+local gradient3 = surface.GetTextureID("gui/center_gradient")
 
-	function PANEL:Init()
+local backgroundNV = Material("thespireroleplay/vgui/charmenu/background.png")
+
+function PANEL:Init()
 	
-		timer.Remove("falloutMenuFadeNS")
+	timer.Remove("falloutMenuFadeNS")
 	
-		if (IsValid(nut.gui.loading)) then
-			nut.gui.loading:Remove()
-		end
+	if (IsValid(nut.gui.loading)) then
+		nut.gui.loading:Remove()
+	end
 		
-		if (IsValid(nut.gui.char) or (LocalPlayer().getChar and LocalPlayer():getChar())) then
-			nut.gui.char:Remove()
-		end
+	if (IsValid(nut.gui.char) or (LocalPlayer().getChar and LocalPlayer():getChar())) then
+		nut.gui.char:Remove()
+	end
 
-		nut.gui.char = self
+	nut.gui.char = self
 
-		self:SetSize(ScrW(), ScrH())
-		self:SetDrawBackground(false)
-		self:MakePopup()
+	self:SetSize(ScrW(), ScrH())
+	self:SetDrawBackground(false)
+	self:MakePopup()
 
-			self.FalloutLogo = vgui.Create("nsFade", self)
-			self.FalloutLogo:SetText(" ")
-			self.FalloutLogo:FadeIn(1.5)
-			self.FalloutLogo:SetImage("thespireroleplay/vgui/charmenu/main.png")
-			self.FalloutLogo:SetImageSize(512, 128)
-			self.FalloutLogo:SetSize(512,128)
-			self.FalloutLogo:SetMouseInputEnabled(false)
-			self.FalloutLogo:SetPos(24, ((ScrH() / 2)-42))
+	self.FalloutLogo = vgui.Create("nsFade", self)
+	self.FalloutLogo:SetText(" ")
+	self.FalloutLogo:FadeIn(1.5)
+	self.FalloutLogo:SetImage("thespireroleplay/vgui/charmenu/main.png")
+	self.FalloutLogo:SetImageSize(512, 128)
+	self.FalloutLogo:SetSize(512,128)
+	self.FalloutLogo:SetMouseInputEnabled(false)
+	self.FalloutLogo:SetPos(24, ((ScrH() / 2)-42))
 
-			timer.Simple(0.7, function()
+	timer.Simple(0.7, function()
 				
-				if (LocalPlayer().getChar && LocalPlayer():getChar()) then
-					self.createButton = vgui.Create("SButton", self)
-					self.createButton:SetText("Continue")
-					self.createButton:FadeIn(1)
-					self.createButton:SetWide(220)
-					self.createButton:SetPos(ScrW() - (200 + self.createButton:GetWide()/2), (ScrH() / 2) - 150)
-					self.createButton:SetMouseInputEnabled(true)
-					self.createButton.DoClick = function(panel)	
+		if (LocalPlayer().getChar && LocalPlayer():getChar()) then
+			self.createButton = vgui.Create("SButton", self)
+			self.createButton:SetText("Continue")
+			self.createButton:FadeIn(1)
+			self.createButton:SetWide(220)
+			self.createButton:SetPos(ScrW() - (200 + self.createButton:GetWide()/2), (ScrH() / 2) - 150)
+			self.createButton:SetMouseInputEnabled(true)
+			self.createButton.DoClick = function(panel)	
 					
-						self:FadeOutMusic()
-						self:Remove()
-					
-						--[[ if IsValid(characterPanel) and characterPanel.Active then
-							characterPanel:FadeOut(characterPanel)
-							return
-						end
-
-		
-						if IsValid(factionPanel) and factionPanel.Active then 
-							factionPanel:FadeOut(factionPanel)
-							return
-						end
-			
-						self.characters = {}
-						local y = 0
-		
-						characterPanel = vgui.Create("DPanel", self)
-						characterPanel:SetPos(ScrW() - (775), (ScrH() / 2) - 150)
-						characterPanel:SetSize(450, 500)
-						characterPanel.Active = true
-						characterPanel.Paint = function(p, w, h)
-							surface.SetDrawColor(50, 50, 50, 0) 
-							surface.DrawRect(0, 0, w, h)
-						end
-						characterPanel.FadeOut = function(p)
-							local children = p:GetChildren()
-							for _, panel in pairs(children) do
-								panel:FadeOut(0.25)
-							end
-							p.Active = false
-							timer.Simple(2, function()
-								if IsValid(p) then
-									p:Remove()
-								end
-							end)
-						end
-		
-						if (nut.characters and table.Count(nut.characters) > 0) then
-							for k, v in ipairs(nut.characters) do
-							
-								local character = nut.char.loaded[v]
-							
-								local color = nut.config.get("color")
-								local r, g, b = color.r, color.g, color.b
-		
-								self.charSelect = vgui.Create("SButton", characterPanel)
-								local name = character:getName() or "Error"
-								self.charSelect:SetText("Charger - "..name)
-								self.charSelect:FadeIn(0.5)
-								self.charSelect:SetWide(450)
-								self.charSelect:SetMouseInputEnabled(true)
-								self.charSelect:SetPos(0,y)
-								self.charSelect.DoClick = function()
-									self.id = character:getID()
-									if (self.id) then
-										netstream.Start("charChoose", self.id)
-									else
-										return false
-									end
-								end
-		
-								y = self.charSelect:GetTall() + 10 + y
-								self.characters[character:getID()] = panel
-							end
-						end ]]
-				end
+			self:FadeOutMusic()
+			self:Remove()
+		end
 				
-				end
+	end
 	
-				self.continueButton = vgui.Create("SButton", self)
-				self.continueButton:SetText("Create")
-				self.continueButton:FadeIn(1)
-				self.continueButton:SetWide(220)
-				self.continueButton:SetPos(ScrW() - (200 + self.continueButton:GetWide()/2), (ScrH() / 2) - 100)
-				self.continueButton:SetMouseInputEnabled(true)
-				self.continueButton.DoClick = function(panel)
+	self.continueButton = vgui.Create("SButton", self)
+	self.continueButton:SetText("Create")
+	self.continueButton:FadeIn(1)
+	self.continueButton:SetWide(220)
+	self.continueButton:SetPos(ScrW() - (200 + self.continueButton:GetWide()/2), (ScrH() / 2) - 100)
+	self.continueButton:SetMouseInputEnabled(true)
+	self.continueButton.DoClick = function(panel)
+		if IsValid(factionPanel) and factionPanel.Active then
+			factionPanel:FadeOut(factionPanel)
+			return
+		end
+
+		if IsValid(characterPanel) and characterPanel.Active then 
+			characterPanel:FadeOut(characterPanel)
+			return
+		end
+	
+		if (IsValid(nut.gui.charCreate)) then
+			return false
+		end
+	
+		if (nut.characters and table.Count(nut.characters) >= nut.config.get("maxChars")) then
+			return false
+		end
+	
+		if (IsValid(self.selector)) then
+			self.selector:Remove()
+			return
+		end
+	
+		local grace = CurTime() + 0.1
+	
+		local y = 0
+	
+		factionPanel = vgui.Create("DPanel", self)
+		factionPanel:SetPos(ScrW() - (775), (ScrH() / 2) - 150)
+		factionPanel:SetSize(460, 500)
+		factionPanel.Active = true
+		factionPanel.Paint = function(p, w, h)
+			surface.SetDrawColor(50, 50, 50, 0) 
+			surface.DrawRect(0, 0, w, h) -- Draw the rect
+		end
+		factionPanel.FadeOut = function(p)
+			local children = p:GetChildren()
+			for _, panel in pairs(children) do
+				panel:FadeOut(0.25)
+			end
+			p.Active = false
+			timer.Simple(2, function()
+				if IsValid(p) then
+					p:Remove()
+				end
+			end)
+		end
+	
+		for k, v in SortedPairs(nut.faction.teams) do
+			if (nut.faction.hasWhitelist(v.index)) then
+				self.factionSelect = vgui.Create("SButton", factionPanel)
+				self.factionSelect:SetText(v.name)
+				self.factionSelect:SetWide(450)
+				self.factionSelect:FadeIn(0.5)
+				self.factionSelect:SetMouseInputEnabled(true)
+				self.factionSelect:SetPos(0, y)
+				self.factionSelect.DoClick = function(panel)
+					PLUGIN.creationfaction = v.index
 					if IsValid(factionPanel) and factionPanel.Active then
 						factionPanel:FadeOut(factionPanel)
-						return
 					end
-
-					if IsValid(characterPanel) and characterPanel.Active then 
-						characterPanel:FadeOut(characterPanel)
-						return
-					end
-	
-					if (IsValid(nut.gui.charCreate)) then
-						return false
-					end
-	
-					if (nut.characters and table.Count(nut.characters) >= nut.config.get("maxChars")) then
-						return false
-					end
-	
-					if (IsValid(self.selector)) then
-						self.selector:Remove()
-	
-						return
-					end
-	
-					local grace = CurTime() + 0.1
-	
-					local y = 0
-	
-					factionPanel = vgui.Create("DPanel", self)
-					factionPanel:SetPos(ScrW() - (775), (ScrH() / 2) - 150)
-					factionPanel:SetSize(460, 500)
-					factionPanel.Active = true
-					factionPanel.Paint = function(p, w, h)
-					    surface.SetDrawColor(50, 50, 50, 0) 
-					    surface.DrawRect(0, 0, w, h) -- Draw the rect
-					end
-					factionPanel.FadeOut = function(p)
-						local children = p:GetChildren()
-						for _, panel in pairs(children) do
-							panel:FadeOut(0.25)
-						end
-						p.Active = false
-						timer.Simple(2, function()
-							if IsValid(p) then
-								p:Remove()
-							end
-						end)
-					end
-	
-					for k, v in SortedPairs(nut.faction.teams) do
-						if (nut.faction.hasWhitelist(v.index)) then
-	
-							self.factionSelect = vgui.Create("SButton", factionPanel)
-							self.factionSelect:SetText(v.name)
-							self.factionSelect:SetWide(450)
-							self.factionSelect:FadeIn(0.5)
-							self.factionSelect:SetMouseInputEnabled(true)
-							self.factionSelect:SetPos(0, y)
-							self.factionSelect.DoClick = function(panel)
-								FO_CHRGUI.creationfaction = v.index
-								if IsValid(factionPanel) and factionPanel.Active then
-									factionPanel:FadeOut(factionPanel)
-								end
-								self:FadeOutMusic()
-								self:Remove()
-								FO_CHRGUI:PlayIntro()
-							end
-	
-							y = self.factionSelect:GetTall() + 10 + y
-						end
-					end
+					self:FadeOutMusic()
+					self:Remove()
+					PLUGIN:PlayIntro()
 				end
 	
-				self.loadButton = vgui.Create("SButton", self)
-				self.loadButton:SetText("Load")
-				self.loadButton:FadeIn(1)
-				self.loadButton:SetWide(220)
-				self.loadButton:SetPos(ScrW() - (200 + self.loadButton:GetWide()/2), (ScrH() / 2) - 50)
-				self.loadButton:SetMouseInputEnabled(true)
-				self.loadButton.DoClick = function(panel)
+				y = self.factionSelect:GetTall() + 10 + y
+			end
+		end
+	end
 	
-					if IsValid(characterPanel) and characterPanel.Active then
-						characterPanel:FadeOut(characterPanel)
-						return
-					end
+	self.loadButton = vgui.Create("SButton", self)
+	self.loadButton:SetText("Load")
+	self.loadButton:FadeIn(1)
+	self.loadButton:SetWide(220)
+	self.loadButton:SetPos(ScrW() - (200 + self.loadButton:GetWide()/2), (ScrH() / 2) - 50)
+	self.loadButton:SetMouseInputEnabled(true)
+	self.loadButton.DoClick = function(panel)
 	
-					if IsValid(factionPanel) and factionPanel.Active then 
-						factionPanel:FadeOut(factionPanel)
-						return
-					end
+	if IsValid(characterPanel) and characterPanel.Active then
+		characterPanel:FadeOut(characterPanel)
+		return
+	end
+	
+	if IsValid(factionPanel) and factionPanel.Active then 
+		factionPanel:FadeOut(factionPanel)
+		return
+	end
 		
-					self.characters = {}
-					local y = 0
+	self.characters = {}
+	local y = 0
 	
-					characterPanel = vgui.Create("DPanel", self)
-					characterPanel:SetPos(ScrW() - (775), (ScrH() / 2) - 150)
-					characterPanel:SetSize(460, 500)
-					characterPanel.Active = true
-					characterPanel.Paint = function(p, w, h)
-					    surface.SetDrawColor(50, 50, 50, 0) 
-					    surface.DrawRect(0, 0, characterPanel:GetWide(), characterPanel:GetTall()) -- Draw the rect
-					end
-					characterPanel.FadeOut = function(p)
-						local children = p:GetChildren()
-						for _, panel in pairs(children) do
-							panel:FadeOut(0.25)
-						end
-						p.Active = false
+	characterPanel = vgui.Create("DPanel", self)
+	characterPanel:SetPos(ScrW() - (775), (ScrH() / 2) - 150)
+	characterPanel:SetSize(460, 500)
+	characterPanel.Active = true
+	characterPanel.Paint = function(p, w, h)
+	   surface.SetDrawColor(50, 50, 50, 0) 
+	    surface.DrawRect(0, 0, characterPanel:GetWide(), characterPanel:GetTall()) -- Draw the rect
+	end
+	characterPanel.FadeOut = function(p)
+	local children = p:GetChildren()
+	for _, panel in pairs(children) do
+		panel:FadeOut(0.25)
+	end
+			p.Active = false
 						timer.Simple(2, function()
 							if IsValid(p) then
 								p:Remove()

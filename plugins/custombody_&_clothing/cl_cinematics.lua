@@ -1,3 +1,5 @@
+local PLUGIN = PLUGIN
+
 local currentFrame = currentFrame or 0
 local frameMaterials = frameMaterials or {}
 local frameTime = frameTime or CurTime()
@@ -38,7 +40,7 @@ for k, v in pairs(frames) do
 	frameMaterials[k] = Material(v.image)
 end
 
-function FO_CHRGUI:PlayIntro()
+function PLUGIN:PlayIntro()
 	introFrame = vgui.Create("DFrame")
 	introFrame:SetPos(ScrW(), ScrH())
 	introFrame:MakePopup()
@@ -49,19 +51,19 @@ function FO_CHRGUI:PlayIntro()
 	end
 	cinematicTransitionState = 0
 
-	FO_CHRGUI:PlayIntroSound("intro/"..frames[1].narration)
-	FO_CHRGUI:PlayIntroSound("fosounds/fix/mus_SCR_DocMitchell.mp3")
+	self:PlayIntroSound("intro/"..frames[1].narration)
+	self:PlayIntroSound("fosounds/fix/mus_SCR_DocMitchell.mp3")
 	
 	frameTime = CurTime() + frames[1].len
-	FO_CHRGUI:PlayIntroSound("intro/"..frames[1].len)
+	self:PlayIntroSound("intro/"..frames[1].len)
 	currentFrame = 1
 	
-	FO_CHRGUI:PlayIntroSound("intro/mus_inc_peaceful-024.ogg")
+	self:PlayIntroSound("intro/mus_inc_peaceful-024.ogg")
 	
 	hook.Add("Think", "IntroThink", function()
 		if frameTime != 0 then
 			if (frameTime < CurTime()) then
-				FO_CHRGUI:NextFrame()
+				self:NextFrame()
 			end
 		end
 	end)
@@ -89,11 +91,13 @@ function FO_CHRGUI:PlayIntro()
 	end)
 end
 
-function FO_CHRGUI:NextFrame()
+function PLUGIN:NextFrame()
+	local self = self
+
 	currentFrame = currentFrame + 1
 	if (frames[currentFrame]) then
 		frameTime = CurTime() + frames[currentFrame].len + 1.5
-		FO_CHRGUI:PlayIntroSound("intro/"..frames[currentFrame].narration)
+		self:PlayIntroSound("intro/"..frames[currentFrame].narration)
 	elseif (cinematicTransitionState == 0) then
 		cinematicTransitionState = 1
 		local fade = vgui.Create("nsFade")
@@ -102,22 +106,23 @@ function FO_CHRGUI:NextFrame()
 		fade:SetSize(ScrW(), ScrH())
 		fade:SetImage("forp/black.png")
 		fade:FadeIn(2)
+
 		timer.Simple(2, function()
 			fade:FadeOut(0.1)
 			timer.Simple(0.1, function()
 				fade:Remove()
 			end)
-			FO_CHRGUI:CreateCharacter()
+			self:CreateCharacter()
 			frameTime = 0
 			hook.Remove("Think", "IntroThink")
 			hook.Remove("HUDDrawScoreBoard", "RenderIntro")
 			introFrame:Remove()
 		end)
-		FO_CHRGUI:PlayIntroSound("intro/mus_endgametransitionstinger.ogg")
+		self:PlayIntroSound("intro/mus_endgametransitionstinger.ogg")
 	end
 end
 
-function FO_CHRGUI:PlayIntroSound(path)
+function PLUGIN:PlayIntroSound(path)
 	path = "sound/"..path
 	sound.PlayFile(path, "", function(station)
 		if (IsValid(station)) then

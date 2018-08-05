@@ -1,5 +1,3 @@
-local PLUGIN = PLUGIN
-
 local PANEL = {}
 
 AccessorFunc( PANEL, "m_fAnimSpeed",	"AnimSpeed" )

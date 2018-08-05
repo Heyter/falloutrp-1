@@ -1,4 +1,7 @@
-nut.anim.fallout_male = {
+--------------------------
+--[[ ANIMATION TABLES ]]--
+--------------------------
+nut.anim.forp_Male = {
 	normal = {
 		idle 					=	{ACT_IDLE, ACT_IDLE_ANGRY_SMG1},
 		idle_crouch 			=	{ACT_COVER_LOW, ACT_COVER_LOW},
@@ -151,7 +154,7 @@ nut.anim.fallout_male = {
 	},
 }
 
-nut.anim.fallout_female = {
+nut.anim.forp_Female = {
 	normal = {
 		idle 					=	{ACT_IDLE, ACT_IDLE_ANGRY_SMG1},
 		idle_crouch 			=	{ACT_COVER_LOW, ACT_COVER_LOW},
@@ -297,3 +300,176 @@ nut.anim.fallout_female = {
 	glide = ACT_GLIDE,
 	vehicle = nut.anim.citizen_male.vehicle
 }
+
+local animClasses = {
+	["models/lazarusroleplay/heads/female_african.mdl"] = "forp_Female",
+	["models/lazarusroleplay/heads/female_asian.mdl"] = "forp_Female",
+	["models/lazarusroleplay/heads/female_caucasian.mdl"] = "forp_Female",
+	["models/lazarusroleplay/heads/female_hispanic.mdl"] = "forp_Female",
+	["models/lazarusroleplay/heads/male_african.mdl"] = "forp_Male",
+	["models/lazarusroleplay/heads/male_asian.mdl"] = "forp_Male",
+	["models/lazarusroleplay/heads/male_caucasian.mdl"] = "forp_Male",
+	["models/lazarusroleplay/heads/male_hispanic.mdl"] = "forp_Male"
+}
+
+-----------------------
+--[[ HOLD TYPES ]]--
+-----------------------
+local holdTypes = {
+	weapon_physgun = "smg",
+	weapon_physcannon = "smg",
+	weapon_stunstick = "melee",
+	weapon_crowbar = "melee",
+	weapon_stunstick = "melee",
+	weapon_357 = "pistol",
+	weapon_pistol = "pistol",
+	weapon_smg1 = "smg",
+	weapon_ar2 = "smg",
+	weapon_crossbow = "smg",
+	weapon_shotgun = "shotgun",
+	weapon_frag = "grenade",
+	weapon_slam = "grenade",
+	weapon_rpg = "shotgun",
+	weapon_bugbait = "melee",
+	weapon_annabelle = "shotgun",
+	gmod_tool = "pistol"
+}
+
+-- We don't want to make a table for all of the holdtypes, so just alias them.
+local translateHoldType = {
+	melee2 = "melee",
+	fist = "melee",
+	knife = "melee",
+	physgun = "smg",
+	crossbow = "ar2",
+	slam = "grenade",
+	passive = "normal",
+	rpg = "shotgun"
+}
+
+local normalHoldtypes = {
+	normal = true,
+	fist = true,
+	melee = true,
+	revolver = true,
+	pistol = true,
+	slam = true,
+	knife = true,
+	grenade = true
+}
+
+local function getHoldType(weapon)
+	local holdType = holdTypes[weapon:GetClass()]
+
+	if (holdType) then
+		return holdType
+	elseif (weapon.HoldType) then
+		return translateHoldType[weapon.HoldType] or weapon.HoldType
+	else
+		return "normal"
+	end
+end
+
+---------------------------
+--[[ DISPLAY ANIMATIONS ]]--
+----------------------------
+local WEAPON_LOWERED = 1
+local WEAPON_RAISED = 2
+local math_NormalizeAngle = math.NormalizeAngle
+local string_find = string.find
+local string_lower = string.lower
+local getAnimClass = nut.anim.getModelClass
+local config_get = nut.config.get
+local length2D = FindMetaTable("Vector").Length2D
+
+function PLUGIN:CalcMainActivity(ply, vel)
+	if ( not self:HaveFalloutModel(ply) ) then return end
+
+	local model = ply:GetModel()
+	local wep = ply:GetActiveWeapon()
+	local holdType = "normal"
+	local state = WEAPON_LOWERED
+	local action = "idle"
+	local len = length2D(vel)
+
+	if ( len >= config_get("runSpeed") - 10 ) then
+		action = "run"
+	elseif ( len >= 5 ) then
+		action = "walk"
+	end
+
+	if ( IsValid(wep) ) then
+		holdType = getHoldType(wep)
+
+		if ( wep.IsAlwaysRaised or ALWAYS_RAISED[wep:GetClass()] ) then
+			state = WEAPON_RAISED
+		end
+	end
+
+	if ( ply:isWepRaised() ) then
+		state = WEAPON_RAISED
+	end
+	
+	local class = animClasses[model]
+
+	if ( ply:getChar() and ply:Alive() ) then
+		ply.CalcSeqOverride = -1
+
+		if ( ply:Crouching() ) then
+			action = action.."_crouch"
+		end
+		
+		local animClass = nut.anim[class]
+
+		if ( not animClass) then
+			class = "citizen_male"
+        end
+        
+		if ( not animClass[holdType] ) then
+			holdType = "normal"
+        end
+        
+		if ( not animClass[holdType][action] ) then
+			action = "idle"
+		end
+
+		local animation = animClass[holdType][action]
+		local value = ACT_IDLE
+
+		if ( not ply:OnGround() ) then
+			ply.CalcIdeal = animClass.glide or ACT_GLIDE
+		elseif ( ply:InVehicle() ) then
+			ply.CalcIdeal = animClass.normal.idle_crouch[1]
+		elseif ( animation ) then
+			value = animation[state]
+
+			if (type(value) == "string") then
+				ply.CalcSeqOverride = ply:LookupSequence(value)
+			else
+				ply.CalcIdeal = value
+			end
+		end
+
+		local override = ply:getNetVar("seq")
+
+		if ( override ) then
+			ply.CalcSeqOverride = ply:LookupSequence(override)
+		end
+
+		if (CLIENT) then
+			ply:SetIK(false)
+		end
+
+		local eyeAngles = ply:EyeAngles()
+		local yaw = vel:Angle().yaw
+		local normalized = math_NormalizeAngle(yaw - eyeAngles.y)
+
+		ply:SetPoseParameter("move_yaw", normalized)
+		
+		if ( ply.nutForceSeq ) then
+			return ply.CalcIdeal, ply.nutForceSeq or ACT_IDLE, ply.CalcSeqOverride or -1
+		end
+
+		return ply.CalcIdeal or ACT_IDLE, ply.CalcSeqOverride or -1
+	end
+end

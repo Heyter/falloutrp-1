@@ -1,4 +1,4 @@
-FO_CHRGUI.femname = {
+PLUGIN.FemaleNames = {
     "Jessica",
     "Ashley",
     "Emily",
@@ -411,7 +411,7 @@ FO_CHRGUI.femname = {
 	"Lorilee",
 }
 
-FO_CHRGUI.malename = {
+PLUGIN.MaleNames = {
 	"Keenan",
 	"Chris",
 	"David",
@@ -976,7 +976,7 @@ FO_CHRGUI.malename = {
 	"Larry"
 }
 
-FO_CHRGUI.lastname = {
+PLUGIN.LastNames = {
 	"Douglas",
 	"Kolias",
 	"McWatters",
