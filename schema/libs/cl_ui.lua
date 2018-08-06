@@ -116,3 +116,12 @@ function fo.ui.DrawFalloutBlur(x, y, w, h, thickness)
 		end
 	end
 end
+
+function fo.ui.DrawFalloutBlurText(x, y, text, xAlign, yAlign)
+	local col = fo.ui.GetHUDColor()
+	local bgCol = col
+	bgCol.a = 180
+
+	draw.SimpleText(text, "Monofonto24_blur", x, y, col, xAlign or nil, yAlign or nil)
+    draw.SimpleText(text, "Monofonto24", x, y, bgCol, xAlign or nil, yAlign or nil)
+end
