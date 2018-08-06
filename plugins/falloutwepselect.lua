@@ -76,6 +76,7 @@ if (CLIENT) then
 		end
 	end
 
+	local getFoColor = fo.ui.GetHUDColor()
 	function PLUGIN:HUDPaint()
 		local x = ScrW() * 0.55
 
@@ -86,14 +87,17 @@ if (CLIENT) then
 			local color = Color(255, 255, 255, 255)
 
 			if (k == self.lastSlot) then
-				color = SCHEMA:GetColor()
+				local foColor = fo.ui.GetHUDColor()
+				color.r = foColor.r
+				color.g = foColor.g
+				color.b = foColor.b
 			end
 
 			color.a = math.Clamp(255 - math.TimeFraction(self.lifeTime, self.deathTime, CurTime()) * 255, 0, 255)
 			nut.util.drawText(string.upper(v:GetPrintName()), x, y, color)
 
 			if (k == self.lastSlot and self.markup) then
-				--surface.SetDrawColor(30, 30, 30, color.a * 0.95)
+				surface.SetDrawColor(30, 30, 30, color.a * 0.95)
 				surface.DrawRect(x + 118, ScrH() * 0.4 - 4, self.markup:GetWidth() + 20, self.markup:GetHeight() + 18)
 
 				self.markup:Draw(x + 128, ScrH() * 0.4 + 24, 0, 1, color.a)
