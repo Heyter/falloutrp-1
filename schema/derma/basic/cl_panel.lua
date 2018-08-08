@@ -8,12 +8,12 @@ function PANEL:Init()
 end
 
 function PANEL:SetTitle(title)
-    self.title = string.upper(title)
+    self.title = string.upper(title) -- All fallout frame titles are capitalized
     surface.SetFont("Monofonto24")
     self.textsize = surface.GetTextSize(self.title) -- Cache the text size
 end
 
-function PANEL:GetRealBounds(thickness) -- wip function
+function PANEL:GetRealBounds(thickness) -- wip function, used for getting position for child elements
     local thickness = thickness or 16
     local w, h = self:GetSize()
     local x, y = 0, 0
@@ -36,7 +36,7 @@ function PANEL:Paint(w, h)
     
     
     -- Draw border
-    if self.textsize then
+    if self.textsize then -- if has title
         local textSize = self.textsize
         local lineOneEnd = w*.06
         local lineTwoEnd = w*.08
